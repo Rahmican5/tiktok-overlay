@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok Live Overlay Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;font-family:'Luckiest Guy',cursive;min-height:100vh;overflow-x:hidden;transition:background 0.5s}
+body.widget-mode{background:transparent!important}
+body.widget-mode .control-toggle,body.widget-mode .particles,body.widget-mode .star-container{display:none}
+
+/* ===== KONTROL PANELİ ===== */
+.control-toggle{position:fixed;top:10px;right:10px;z-index:10000;background:linear-gradient(135deg,#ff0080,#7928ca);border:none;color:#fff;padding:14px 22px;border-radius:30px;cursor:pointer;font-family:'Luckiest Guy',cursive;font-size:14px;box-shadow:0 0 25px rgba(255,0,128,0.5);transition:all .3s}
+.control-toggle:hover{transform:scale(1.1);box-shadow:0 0 40px rgba(255,0,128,0.8)}
+.cpanel{position:fixed;top:0;right:-540px;width:520px;height:100vh;background:rgba(8,8,25,0.98);border-left:2px solid #ff0080;z-index:9999;transition:right .5s cubic-bezier(.68,-.55,.265,1.55);overflow-y:auto;padding:15px 20px 30px}
+.cpanel.open{right:0}
+.cpanel::-webkit-scrollbar{width:5px}
+.cpanel::-webkit-scrollbar-thumb{background:rgba(255,0,128,0.4);border-radius:5px}
+.cpanel h3{color:#ff0080;margin:18px 0 8px;font-size:13px;letter-spacing:2px;border-bottom:1px solid rgba(255,0,128,0.2);padding-bottom:6px;font-family:'Luckiest Guy',cursive}
+.cpanel label{color:#999;font-size:10px;display:block;margin-bottom:3px;font-family:'Orbitron',sans-serif}
+.cpanel input[type=text],.cpanel input[type=number],.cpanel select,.cpanel textarea{width:100%;padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,0,128,0.25);border-radius:8px;color:#fff;font-family:'Orbitron',sans-serif;font-size:11px;outline:none;margin-bottom:8px;transition:border .3s}
+.cpanel input:focus,.cpanel select:focus{border-color:#ff0080;box-shadow:0 0 8px rgba(255,0,128,0.3)}
+.cpanel input[type=color]{width:45px;height:32px;border:none;border-radius:6px;cursor:pointer;background:transparent;padding:0}
+.cpanel input[type=range]{width:100%;accent-color:#ff0080}
+.cval{color:#ff0080;font-size:10px;font-family:'Orbitron',sans-serif}
+.btn{border:none;color:#fff;padding:8px 18px;border-radius:18px;cursor:pointer;font-family:'Luckiest Guy',cursive;font-size:11px;margin:3px;transition:all .3s;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{transform:scale(1.05)}
+.btn-pink{background:linear-gradient(135deg,#ff0080,#7928ca)}
+.btn-green{background:linear-gradient(135deg,#00ff88,#00aa55);color:#000}
+.btn-red{background:linear-gradient(135deg,#ff4444,#cc0000)}
+.btn-blue{background:linear-gradient(135deg,#00d4ff,#0088cc)}
+.btn-gold{background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000}
+.btn-sm{padding:5px 12px;font-size:10px}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:15px;padding-top:5px}
+.tab{padding:7px 12px;border:1px solid rgba(255,0,128,0.2);background:rgba(255,0,128,0.05);color:#ff0080;border-radius:16px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;transition:all .3s;white-space:nowrap}
+.tab.on{background:linear-gradient(135deg,#ff0080,#7928ca);color:#fff;border-color:transparent;box-shadow:0 0 12px rgba(255,0,128,0.3)}
+.tpanel{display:none}
+.tpanel.on{display:block}
+.row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.row input{flex:1}
+.cbtn{background:#ff4444;border:none;color:#fff;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gbox{background:rgba(255,255,255,0.02);border:1px solid rgba(255,0,128,0.12);border-radius:10px;padding:12px;margin-bottom:10px}
+.gbox .gtitle{color:#ff0080;font-size:11px;font-weight:700;margin-bottom:8px;font-family:'Luckiest Guy',cursive}
+.widget-url-box{background:rgba(0,0,0,0.3);border:1px solid rgba(255,0,128,0.3);border-radius:8px;padding:10px;margin:8px 0;word-break:break-all;color:#00d4ff;font-size:9px;font-family:monospace;position:relative}
+.copy-hint{position:absolute;top:3px;right:3px;background:#ff0080;color:#fff;padding:2px 8px;border-radius:10px;font-size:8px;cursor:pointer;font-family:'Orbitron',sans-serif}
+hr.sep{border:none;border-top:1px solid rgba(255,0,128,0.15);margin:15px 0}
+.preview-img{width:50px;height:50px;border-radius:8px;object-fit:cover;border:2px solid rgba(255,0,128,0.3);margin:5px 0}
+.inline{display:flex;gap:8px;align-items:center}
+.inline>*{flex:1}
+.accordion{background:rgba(255,0,128,0.08);border:1px solid rgba(255,0,128,0.2);border-radius:10px;margin:8px 0;overflow:hidden}
+.accordion-head{padding:10px 15px;cursor:pointer;color:#ff0080;font-size:12px;font-family:'Luckiest Guy',cursive;display:flex;justify-content:space-between;align-items:center}
+.accordion-head:hover{background:rgba(255,0,128,0.05)}
+.accordion-body{padding:0 15px;max-height:0;overflow:hidden;transition:max-height .4s,padding .4s}
+.accordion.open .accordion-body{max-height:2000px;padding:10px 15px 15px}
+.accordion-head .arrow{transition:transform .3s}
+.accordion.open .accordion-head .arrow{transform:rotate(180deg)}
+
+/* ===== PARTIKÜLLER ===== */
+.particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.particle{position:absolute;border-radius:50%;animation:floatP linear infinite;opacity:0}
+@keyframes floatP{0%{transform:translateY(100vh) rotate(0deg);opacity:0}10%{opacity:.4}90%{opacity:.4}100%{transform:translateY(-10vh) rotate(720deg);opacity:0}}
+.star-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+.shooting-star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;box-shadow:0 0 6px #fff,0 0 12px #ff0080;animation:shootStar linear infinite}
+@keyframes shootStar{0%{transform:translate(-100px,-100px);opacity:1}70%{opacity:1}100%{transform:translate(calc(100vw + 100px),calc(100vh + 100px));opacity:0}}
+
+/* ===== OVERLAY İÇERİĞİ ===== */
+.overlay{position:relative;width:100%;min-height:100vh;padding:20px;z-index:10}
+
+/* HEDİYE GALERİSİ */
+.gift-section{margin-bottom:25px}
+.gift-title{text-align:center;margin-bottom:20px}
+.gift-title span{font-size:36px;color:#fff}
+.gift-carousel{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;perspective:1000px}
+.gift-card{width:150px;height:190px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:all .5s cubic-bezier(.68,-.55,.265,1.55);overflow:hidden;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.15)}
+.gift-card:hover{transform:translateY(-20px) scale(1.12) rotateY(15deg)!important}
+.gift-card::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,0.08) 50%,transparent 70%);animation:shimmer 3s ease-in-out infinite}
+@keyframes shimmer{0%{transform:translateX(-100%) translateY(-100%) rotate(45deg)}100%{transform:translateX(100%) translateY(100%) rotate(45deg)}}
+.gift-visual{font-size:50px;margin-bottom:8px;filter:drop-shadow(0 0 8px rgba(255,255,255,0.4))}
+.gift-visual img{width:70px;height:70px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(255,255,255,0.4))}
+.gift-name{color:#fff;font-size:13px;text-align:center;letter-spacing:1px;text-shadow:0 0 10px rgba(255,255,255,0.3)}
+.gift-value{color:rgba(255,255,255,0.6);font-size:10px;margin-top:4px;font-family:'Orbitron',sans-serif}
+
+/* Hediye Animasyonları */
+.gift-card[data-anim=float]{animation:gaFloat 3s ease-in-out infinite}
+.gift-card[data-anim=float]:nth-child(2){animation-delay:.5s}
+.gift-card[data-anim=float]:nth-child(3){animation-delay:1s}
+.gift-card[data-anim=float]:nth-child(4){animation-delay:1.5s}
+.gift-card[data-anim=float]:nth-child(5){animation-delay:2s}
+@keyframes gaFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+
+.gift-card[data-anim=spin]{animation:gaSpin 5s linear infinite}
+@keyframes gaSpin{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
+
+.gift-card[data-anim=pulse]{animation:gaPulse 2s ease-in-out infinite}
+@keyframes gaPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+
+.gift-card[data-anim=bounce]{animation:gaBounce 2s ease infinite}
+@keyframes gaBounce{0%,20%,50%,80%,100%{transform:translateY(0)}40%{transform:translateY(-25px)}60%{transform:translateY(-12px)}}
+
+.gift-card[data-anim=swing]{animation:gaSwing 2.5s ease-in-out infinite;transform-origin:top center}
+@keyframes gaSwing{0%,100%{transform:rotate(0)}25%{transform:rotate(8deg)}75%{transform:rotate(-8deg)}}
+
+.gift-card[data-anim=jello]{animation:gaJello 2s ease infinite}
+@keyframes gaJello{0%,100%{transform:scale3d(1,1,1)}30%{transform:scale3d(1.15,.85,1)}40%{transform:scale3d(.85,1.15,1)}50%{transform:scale3d(1.08,.92,1)}65%{transform:scale3d(.97,1.03,1)}75%{transform:scale3d(1.02,.98,1)}}
+
+.gift-card[data-anim=flip]{animation:gaFlip 3s ease-in-out infinite}
+@keyframes gaFlip{0%{transform:perspective(400px) rotateY(0)}40%{transform:perspective(400px) rotateY(180deg)}100%{transform:perspective(400px) rotateY(360deg)}}
+
+.gift-card[data-anim=glitch]{animation:gaGlitch 3s steps(20) infinite}
+@keyframes gaGlitch{0%,100%{transform:translate(0)}10%{transform:translate(-2px,2px)}20%{transform:translate(2px,-2px)}30%{transform:translate(-1px,1px)}40%{transform:translate(1px,-1px)}50%{transform:translate(0)}60%{transform:translate(-2px,-1px)}70%{transform:translate(2px,1px)}80%{transform:translate(-1px,-2px)}90%{transform:translate(1px,2px)}}
+
+/* AYIRICI ÇİZGİ */
+.glow-line{width:80%;max-width:600px;height:2px;margin:20px auto;background:linear-gradient(90deg,transparent,#ff0080,#00d4ff,#00ff88,transparent);border-radius:2px;box-shadow:0 0 10px rgba(255,0,128,0.4);position:relative;z-index:10}
+
+/* NEON SUBTITLE */
+.sub-section{text-align:center;margin:20px 0;position:relative;z-index:10}
+.sub-section span{font-size:24px;color:#fff}
+
+/* LİDER LİSTELERİ */
+.boards{display:flex;gap:25px;justify-content:center;flex-wrap:wrap;position:relative;z-index:10;margin-top:25px}
+.board{width:320px;border-radius:18px;overflow:hidden;position:relative;transition:all .5s}
+.board-head{padding:16px 18px;text-align:center;position:relative;overflow:hidden}
+.board-head h2{font-size:15px;letter-spacing:2px;color:#fff}
+.board-head::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;animation:scanL 2s linear infinite}
+@keyframes scanL{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.board-body{padding:8px 12px;min-height:180px}
+
+/* Liste Satır Animasyonları */
+.prow{display:flex;align-items:center;padding:9px 12px;margin:5px 0;border-radius:10px;transition:all .4s cubic-bezier(.68,-.55,.265,1.55);opacity:0;animation-fill-mode:both}
+.prow:hover{transform:translateX(8px) scale(1.02)}
+
+.prow[data-anim=slideL]{animation:raSlideL .6s ease-out both}
+@keyframes raSlideL{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:translateX(0)}}
+
+.prow[data-anim=slideR]{animation:raSlideR .6s ease-out both}
+@keyframes raSlideR{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}
+
+.prow[data-anim=fadeUp]{animation:raFadeUp .6s ease-out both}
+@keyframes raFadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+.prow[data-anim=pop]{animation:raPop .5s cubic-bezier(.68,-.55,.265,1.55) both}
+@keyframes raPop{from{opacity:0;transform:scale(0.3)}to{opacity:1;transform:scale(1)}}
+
+.prow[data-anim=flipIn]{animation:raFlip .7s ease-out both}
+@keyframes raFlip{from{opacity:0;transform:perspective(400px) rotateX(90deg)}to{opacity:1;transform:perspective(400px) rotateX(0)}}
+
+.prow[data-anim=bounceIn]{animation:raBounce .8s cubic-bezier(.215,.61,.355,1) both}
+@keyframes raBounce{0%{opacity:0;transform:scale(0.3)}50%{transform:scale(1.05)}70%{transform:scale(0.95)}100%{opacity:1;transform:scale(1)}}
+
+.prow:nth-child(1){animation-delay:.05s}.prow:nth-child(2){animation-delay:.12s}.prow:nth-child(3){animation-delay:.19s}.prow:nth-child(4){animation-delay:.26s}.prow:nth-child(5){animation-delay:.33s}.prow:nth-child(6){animation-delay:.4s}.prow:nth-child(7){animation-delay:.47s}.prow:nth-child(8){animation-delay:.54s}
+
+.prank{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;margin-right:10px;flex-shrink:0;font-family:'Luckiest Guy',cursive}
+.prank.r1{background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000;box-shadow:0 0 12px rgba(255,215,0,0.5);animation:rankGlow 1.5s ease-in-out infinite alternate}
+.prank.r2{background:linear-gradient(135deg,#c0c0c0,#808080);color:#000}
+.prank.r3{background:linear-gradient(135deg,#cd7f32,#8b4513);color:#fff}
+.prank.rd{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5)}
+@keyframes rankGlow{from{box-shadow:0 0 12px rgba(255,215,0,0.5)}to{box-shadow:0 0 30px rgba(255,215,0,0.8),0 0 60px rgba(255,215,0,0.3)}}
+.pname{color:#fff;font-size:13px;flex:1;letter-spacing:1px}
+.pscore{font-size:15px;font-weight:900;flex-shrink:0}
+
+/* Widget Giriş Animasyonları */
+.widget-enter[data-wanim=fadeIn]{animation:wFadeIn 1s ease both}
+@keyframes wFadeIn{from{opacity:0}to{opacity:1}}
+.widget-enter[data-wanim=slideDown]{animation:wSlideDown .8s ease-out both}
+@keyframes wSlideDown{from{opacity:0;transform:translateY(-60px)}to{opacity:1;transform:translateY(0)}}
+.widget-enter[data-wanim=slideUp]{animation:wSlideUp .8s ease-out both}
+@keyframes wSlideUp{from{opacity:0;transform:translateY(60px)}to{opacity:1;transform:translateY(0)}}
+.widget-enter[data-wanim=zoomIn]{animation:wZoomIn .6s cubic-bezier(.68,-.55,.265,1.55) both}
+@keyframes wZoomIn{from{opacity:0;transform:scale(0.3)}to{opacity:1;transform:scale(1)}}
+.widget-enter[data-wanim=rotateIn]{animation:wRotateIn .8s ease-out both}
+@keyframes wRotateIn{from{opacity:0;transform:rotate(-180deg) scale(0.3)}to{opacity:1;transform:rotate(0) scale(1)}}
+.widget-enter[data-wanim=bounceIn]{animation:wBounceIn 1s cubic-bezier(.215,.61,.355,1) both}
+@keyframes wBounceIn{0%{opacity:0;transform:scale(0.3)}40%{transform:scale(1.1)}60%{transform:scale(0.9)}80%{transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
+.widget-enter[data-wanim=flipIn]{animation:wFlipIn .8s ease-out both}
+@keyframes wFlipIn{from{opacity:0;transform:perspective(400px) rotateY(90deg)}to{opacity:1;transform:perspective(400px) rotateY(0)}}
+.widget-enter[data-wanim=glitch]{animation:wGlitch .5s steps(10) both,wFadeIn .5s ease both}
+
+/* Footer */
+.footer-area{text-align:center;margin-top:35px;position:relative;z-index:10}
+.footer-area p{font-family:'Orbitron',sans-serif;font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:3px;animation:ftPulse 3s ease-in-out infinite}
+@keyframes ftPulse{0%,100%{opacity:.25}50%{opacity:.7}}
+
+/* Neon Flicker */
+.neon-flicker{animation:flicker var(--flick-speed,3s) linear infinite}
+@keyframes flicker{0%,19.9%,22%,62.9%,64%,64.9%,70%,100%{opacity:1}20%,21.9%,63%,63.9%,65%,69.9%{opacity:.4}}
+
+/* Widget mode */
+body.widget-mode .overlay{padding:10px;min-height:auto}
+body.widget-mode .glow-line,body.widget-mode .sub-section,body.widget-mode .footer-area{display:none}
+
+@media(max-width:768px){.boards{flex-direction:column;align-items:center}.board{width:95%}.gift-card{width:120px;height:160px}.cpanel{width:100%;right:-110%}}
+</style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+<div class="star-container" id="stars"></div>
+<input type="file" id="imgUpload" accept="image/*" style="display:none">
+
+<button class="control-toggle" onclick="togglePanel()">⚙️ AYARLAR</button>
+
+<!-- ===== KONTROL PANELİ ===== -->
+<div class="cpanel" id="cpanel">
+<div class="tabs" id="tabsBar"></div>
+<div id="tabPanels"></div>
+</div>
+
+<!-- ===== OVERLAY ===== -->
+<div class="overlay" id="overlayRoot">
+
+<!-- HEDİYE -->
+<div id="widget-gifts" class="gift-section widget-enter">
+<div class="gift-title"><span id="elMainTitle"></span></div>
+<div class="gift-carousel" id="giftCarousel"></div>
+</div>
+
+<div class="glow-line" id="glowLine1"></div>
+<div class="sub-section"><span id="elSubTitle"></span></div>
+
+<!-- LİSTELER -->
+<div class="boards" id="boardsWrap">
+<div id="widget-list1" class="board widget-enter">
+<div class="board-head" id="bh1"><h2 id="lt1"></h2></div>
+<div class="board-body" id="lb1"></div>
+</div>
+<div id="widget-list2" class="board widget-enter">
+<div class="board-head" id="bh2"><h2 id="lt2"></h2></div>
+<div class="board-body" id="lb2"></div>
+</div>
+<div id="widget-list3" class="board widget-enter">
+<div class="board-head" id="bh3"><h2 id="lt3"></h2></div>
+<div class="board-body" id="lb3"></div>
+</div>
+</div>
+
+<div class="glow-line"></div>
+<div class="footer-area"><p id="elFooter"></p></div>
+</div>
+
+<script>
+// ============================================================
+//  VERİ MODELİ
+// ============================================================
+const STORAGE_KEY = 'tiktokOverlayPro';
+let C = getDefaultConfig();
+
+function getDefaultConfig(){
+  return {
+    mainTitle:{text:'🎁 HEDİYE GALERİSİ 🎁',size:36,neonColor:'#ff0080',intensity:100,blur:150,flicker:true,flickerSpeed:3},
+    subTitle:{text:'⚡ EN ÇOK HEDİYE GÖNDERENLER ⚡',size:24,neonColor:'#00d4ff',intensity:80,blur:100,flicker:false,flickerSpeed:3},
+    footer:'CANLI YAYIN OVERLAY • TIKTOK LIVE',
+    gifts:[
+      {type:'emoji',emoji:'🌹',name:'GÜL',value:'1 Coin',color:'#ff0080',imageData:''},
+      {type:'emoji',emoji:'💎',name:'ELMAS',value:'100 Coin',color:'#00d4ff',imageData:''},
+      {type:'emoji',emoji:'🦁',name:'ASLAN',value:'500 Coin',color:'#00ff88',imageData:''},
+      {type:'emoji',emoji:'🚀',name:'ROKET',value:'1000 Coin',color:'#b200ff',imageData:''},
+      {type:'emoji',emoji:'👑',name:'TAÇ',value:'5000 Coin',color:'#ffd700',imageData:''}
+    ],
+    giftAnim:'float',
+    lists:{
+      1:{title:'🏆 TOP OYUNCULAR',neonColor:'#ff0080',intensity:100,blur:100,flicker:true,flickerSpeed:2.5,players:[
+        {name:'KralOyuncu',score:2500},{name:'NeonMaster',score:2100},{name:'GamerTR',score:1800},{name:'YıldızAvcı',score:1500},{name:'ShadowFox',score:1200}
+      ]},
+      2:{title:'⚡ HEDİYE KRALLARI',neonColor:'#00d4ff',intensity:100,blur:100,flicker:true,flickerSpeed:3,players:[
+        {name:'DiamondKing',score:15000},{name:'GiftQueen',score:12000},{name:'RoseHero',score:9500},{name:'CoinMaster',score:7000},{name:'StarLight',score:5500}
+      ]},
+      3:{title:'🌟 GÜNÜN YILDIZLARI',neonColor:'#00ff88',intensity:100,blur:100,flicker:false,flickerSpeed:3,players:[
+        {name:'EfsaneOyuncu',score:980},{name:'TurboGamer',score:870},{name:'PhoenixTR',score:750},{name:'CosmicRay',score:640},{name:'BlazeFire',score:520}
+      ]}
+    },
+    listAnim:'slideL',
+    widgetAnims:{gifts:'fadeIn',list1:'fadeIn',list2:'fadeIn',list3:'fadeIn'},
+    bg:{color:'#0a0a0a',opacity:100},
+    particles:25,
+    shootingStars:5
+  };
+}
+
+// ============================================================
+//  WIDGET MODE TESPİTİ
+// ============================================================
+const urlParams = new URLSearchParams(window.location.search);
+const widgetMode = urlParams.get('widget');
+
+function setupWidgetMode(){
+  if(!widgetMode) return;
+  document.body.classList.add('widget-mode');
+  document.querySelectorAll('.overlay > *').forEach(el=>el.style.display='none');
+  const target = document.getElementById('widget-'+widgetMode);
+  if(target){
+    target.style.display='';
+    if(widgetMode.startsWith('list')){
+      document.getElementById('boardsWrap').style.display='flex';
+      document.querySelectorAll('.board').forEach(b=>{
+        if(b.id !== 'widget-'+widgetMode) b.style.display='none';
+        else b.style.display='';
+      });
+    }
+  }
+  // Polling sync
+  setInterval(()=>{loadFromStorage();applyAll();},2000);
+}
+
+// ============================================================
+//  NEON YARDIMCI
+// ============================================================
+function makeNeon(color, intensity, blur){
+  const f=intensity/100;
+  return `0 0 ${7*f}px #fff, 0 0 ${10*f}px #fff, 0 0 ${21*f}px #fff, 0 0 ${42*f}px ${color}, 0 0 ${82*f}px ${color}, 0 0 ${blur*f}px ${color}`;
+}
+
+function applyNeon(el, cfg){
+  if(!el) return;
+  el.style.textShadow = makeNeon(cfg.neonColor, cfg.intensity, cfg.blur);
+  el.style.color = '#fff';
+  if(cfg.flicker){
+    el.classList.add('neon-flicker');
+    el.style.setProperty('--flick-speed', cfg.flickerSpeed+'s');
+  } else {
+    el.classList.remove('neon-flicker');
+  }
+}
+
+// ============================================================
+//  RENDER FONKSİYONLARI
+// ============================================================
+function applyAll(){
+  // Ana Başlık
+  const mt = document.getElementById('elMainTitle');
+  mt.textContent = C.mainTitle.text;
+  mt.style.fontSize = C.mainTitle.size+'px';
+  applyNeon(mt, C.mainTitle);
+
+  // Alt Başlık
+  const st = document.getElementById('elSubTitle');
+  st.textContent = C.subTitle.text;
+  st.style.fontSize = C.subTitle.size+'px';
+  applyNeon(st, C.subTitle);
+
+  // Footer
+  document.getElementById('elFooter').textContent = C.footer;
+
+  // Hediyeler
+  renderGifts();
+
+  // Listeler
+  for(let i=1;i<=3;i++) renderList(i);
+
+  // Widget Animasyonları
+  applyWidgetAnims();
+
+  // Arka Plan
+  applyBg();
+
+  // Partiküller
+  genParticles();
+  genStars();
+}
+
+function renderGifts(){
+  const wrap = document.getElementById('giftCarousel');
+  wrap.innerHTML='';
+  C.gifts.forEach((g,i)=>{
+    const card = document.createElement('div');
+    card.className='gift-card';
+    card.setAttribute('data-anim', C.giftAnim);
+    card.style.borderColor = g.color+'88';
+    card.style.boxShadow = `0 0 30px ${g.color}33, inset 0 0 25px ${g.color}15`;
+    card.style.background = `linear-gradient(135deg, ${g.color}18, ${g.color}08)`;
+    // Glow animasyonu
+    card.addEventListener('mouseenter',()=>{card.style.boxShadow=`0 0 50px ${g.color}66, inset 0 0 35px ${g.color}25`});
+    card.addEventListener('mouseleave',()=>{card.style.boxShadow=`0 0 30px ${g.color}33, inset 0 0 25px ${g.color}15`});
+
+    let visualHTML='';
+    if(g.type==='image' && g.imageData){
+      visualHTML=`<div class="gift-visual"><img src="${g.imageData}" alt="${g.name}"></div>`;
+    } else {
+      visualHTML=`<div class="gift-visual">${g.emoji}</div>`;
+    }
+    card.innerHTML=`${visualHTML}<div class="gift-name">${g.name}</div><div class="gift-value">${g.value}</div>`;
+    card.style.animationDelay=(i*0.4)+'s';
+    wrap.appendChild(card);
+  });
+}
+
+function renderList(n){
+  const list = C.lists[n];
+  // Başlık
+  const titleEl = document.getElementById('lt'+n);
+  titleEl.textContent = list.title;
+  applyNeon(titleEl, list);
+
+  // Board stil
+  const board = document.getElementById('widget-list'+n);
+  board.style.border = `2px solid ${list.neonColor}55`;
+  board.style.boxShadow = `0 0 35px ${list.neonColor}18`;
+  board.style.background = `linear-gradient(180deg, ${list.neonColor}12, rgba(10,10,30,0.95))`;
+
+  const head = document.getElementById('bh'+n);
+  head.style.background = `linear-gradient(135deg, ${list.neonColor}30, ${list.neonColor}10)`;
+  head.querySelector('::after')
+  // Scan line color
+  head.style.setProperty('--scan-color', list.neonColor);
+
+  // Body
+  const body = document.getElementById('lb'+n);
+  body.innerHTML='';
+  const sorted=[...list.players].sort((a,b)=>b.score-a.score);
+  sorted.forEach((p,i)=>{
+    const row=document.createElement('div');
+    row.className='prow';
+    row.setAttribute('data-anim', C.listAnim);
+    row.style.background=`linear-gradient(90deg,${list.neonColor}12,${list.neonColor}02)`;
+    row.style.borderLeft=`3px solid ${list.neonColor}88`;
+    row.style.animationDelay=(i*0.1)+'s';
+
+    let rc='rd',ri=i+1;
+    if(i===0){rc='r1';ri='👑';}
+    else if(i===1){rc='r2';ri='🥈';}
+    else if(i===2){rc='r3';ri='🥉';}
+
+    row.innerHTML=`<div class="prank ${rc}">${ri}</div><div class="pname">${p.name}</div><div class="pscore" style="color:${list.neonColor};text-shadow:0 0 10px ${list.neonColor}55">${fmtScore(p.score)}</div>`;
+    body.appendChild(row);
+  });
+}
+
+function applyWidgetAnims(){
+  const giftsEl=document.getElementById('widget-gifts');
+  if(giftsEl) giftsEl.setAttribute('data-wanim', C.widgetAnims.gifts);
+  for(let i=1;i<=3;i++){
+    const el=document.getElementById('widget-list'+i);
+    if(el) el.setAttribute('data-wanim', C.widgetAnims['list'+i]);
+  }
+}
+
+function applyBg(){
+  const r=parseInt(C.bg.color.substr(1,2),16);
+  const g=parseInt(C.bg.color.substr(3,2),16);
+  const b=parseInt(C.bg.color.substr(5,2),16);
+  document.body.style.backgroundColor=`rgba(${r},${g},${b},${C.bg.opacity/100})`;
+}
+
+function fmtScore(s){return s>=10000?(s/1000).toFixed(1)+'K':s.toLocaleString();}
+
+// ============================================================
+//  KONTROL PANELİ OLUŞTUR
+// ============================================================
+function buildPanel(){
+  const tabs=[
+    {id:'tYazi',label:'📝 Yazılar & Neon'},
+    {id:'tGift',label:'🎁 Hediyeler'},
+    {id:'tList',label:'📋 Listeler'},
+    {id:'tAnim',label:'🎬 Animasyonlar'},
+    {id:'tWidget',label:'🔗 Widget'},
+    {id:'tTema',label:'🎨 Tema'}
+  ];
+
+  const bar=document.getElementById('tabsBar');
+  const panels=document.getElementById('tabPanels');
+  bar.innerHTML='';panels.innerHTML='';
+
+  tabs.forEach((t,i)=>{
+    const btn=document.createElement('div');
+    btn.className='tab'+(i===0?' on':'');
+    btn.textContent=t.label;
+    btn.onclick=()=>{
+      bar.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+      panels.querySelectorAll('.tpanel').forEach(p=>p.classList.remove('on'));
+      btn.classList.add('on');
+      document.getElementById(t.id).classList.add('on');
+    };
+    bar.appendChild(btn);
+
+    const panel=document.createElement('div');
+    panel.id=t.id;
+    panel.className='tpanel'+(i===0?' on':'');
+    panels.appendChild(panel);
+  });
+
+  buildTabYazi();
+  buildTabGift();
+  buildTabList();
+  buildTabAnim();
+  buildTabWidget();
+  buildTabTema();
+}
+
+// --- YAZI & NEON TAB ---
+function buildTabYazi(){
+  const p=document.getElementById('tYazi');
+  p.innerHTML=`
+    <h3>📝 Ana Başlık</h3>
+    <label>Metin</label>
+    <input type="text" id="cMainText" value="${C.mainTitle.text}">
+    <div class="inline">
+      <div><label>Boyut (${C.mainTitle.size}px)</label><input type="range" id="cMainSize" min="14" max="80" value="${C.mainTitle.size}"></div>
+    </div>
+    <h3>✨ Ana Başlık Neon Ayarı</h3>
+    <div class="inline">
+      <div><label>Neon Renk</label><input type="color" id="cMainNeon" value="${C.mainTitle.neonColor}"></div>
+      <div><label>Yoğunluk (${C.mainTitle.intensity}%)</label><input type="range" id="cMainInt" min="0" max="200" value="${C.mainTitle.intensity}"></div>
+    </div>
+    <div class="inline">
+      <div><label>Blur (${C.mainTitle.blur}px)</label><input type="range" id="cMainBlur" min="0" max="300" value="${C.mainTitle.blur}"></div>
+      <div><label>Titreşim Hızı (${C.mainTitle.flickerSpeed}s)</label><input type="range" id="cMainFlickS" min="5" max="80" value="${C.mainTitle.flickerSpeed*10}"></div>
+    </div>
+    <label><input type="checkbox" id="cMainFlick" ${C.mainTitle.flicker?'checked':''}> Neon Titreşim (Flicker)</label>
+    <button class="btn btn-pink" onclick="applyYazi()">✅ Uygula</button>
+
+    <hr class="sep">
+
+    <h3>📝 Alt Başlık</h3>
+    <label>Metin</label>
+    <input type="text" id="cSubText" value="${C.subTitle.text}">
+    <div class="inline">
+      <div><label>Boyut (${C.subTitle.size}px)</label><input type="range" id="cSubSize" min="10" max="60" value="${C.subTitle.size}"></div>
+    </div>
+    <h3>✨ Alt Başlık Neon Ayarı</h3>
+    <div class="inline">
+      <div><label>Neon Renk</label><input type="color" id="cSubNeon" value="${C.subTitle.neonColor}"></div>
+      <div><label>Yoğunluk (${C.subTitle.intensity}%)</label><input type="range" id="cSubInt" min="0" max="200" value="${C.subTitle.intensity}"></div>
+    </div>
+    <div class="inline">
+      <div><label>Blur (${C.subTitle.blur}px)</label><input type="range" id="cSubBlur" min="0" max="300" value="${C.subTitle.blur}"></div>
+      <div><label>Titreşim Hızı (${C.subTitle.flickerSpeed}s)</label><input type="range" id="cSubFlickS" min="5" max="80" value="${C.subTitle.flickerSpeed*10}"></div>
+    </div>
+    <label><input type="checkbox" id="cSubFlick" ${C.subTitle.flicker?'checked':''}> Neon Titreşim (Flicker)</label>
+    <button class="btn btn-pink" onclick="applyYazi()">✅ Uygula</button>
+
+    <hr class="sep">
+    <h3>📝 Alt Bilgi</h3>
+    <label>Metin</label>
+    <input type="text" id="cFooter" value="${C.footer}">
+    <button class="btn btn-pink" onclick="applyYazi()">✅ Uygula</button>
+  `;
+
+  // Live range updates
+  ['cMainSize','cMainInt','cMainBlur','cMainFlickS','cSubSize','cSubInt','cSubBlur','cSubFlickS'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.oninput=()=>{
+      const lbl=el.previousElementSibling||el.parentElement.querySelector('label');
+      if(lbl){
+        const val=id.includes('FlickS')?(el.value/10)+'s':el.value+(id.includes('Size')?'px':id.includes('Int')?'%':'px');
+        lbl.textContent=lbl.textContent.replace(/\(.*\)/,'('+val+')');
+      }
+    };
+  });
+}
+
+function applyYazi(){
+  C.mainTitle.text=document.getElementById('cMainText').value;
+  C.mainTitle.size=parseInt(document.getElementById('cMainSize').value);
+  C.mainTitle.neonColor=document.getElementById('cMainNeon').value;
+  C.mainTitle.intensity=parseInt(document.getElementById('cMainInt').value);
+  C.mainTitle.blur=parseInt(document.getElementById('cMainBlur').value);
+  C.mainTitle.flicker=document.getElementById('cMainFlick').checked;
+  C.mainTitle.flickerSpeed=parseInt(document.getElementById('cMainFlickS').value)/10;
+
+  C.subTitle.text=document.getElementById('cSubText').value;
+  C.subTitle.size=parseInt(document.getElementById('cSubSize').value);
+  C.subTitle.neonColor=document.getElementById('cSubNeon').value;
+  C.subTitle.intensity=parseInt(document.getElementById('cSubInt').value);
+  C.subTitle.blur=parseInt(document.getElementById('cSubBlur').value);
+  C.subTitle.flicker=document.getElementById('cSubFlick').checked;
+  C.subTitle.flickerSpeed=parseInt(document.getElementById('cSubFlickS').value)/10;
+
+  C.footer=document.getElementById('cFooter').value;
+  applyAll();saveToStorage();notify('✅ Yazılar güncellendi!');
+}
+
+// --- HEDİYE TAB ---
+let uploadIdx=-1;
+
+function buildTabGift(){
+  const p=document.getElementById('tGift');
+  let html='<h3>🎁 Hediye Kartları</h3><p style="color:#888;font-size:10px;margin-bottom:10px">Emoji veya görsel yükleyin, sırayı ok tuşlarıyla değiştirin</p>';
+  html+='<div id="giftEditorWrap"></div>';
+  html+='<div style="margin-top:12px"><button class="btn btn-green" onclick="addGift()">➕ Hediye Ekle</button></div>';
+  p.innerHTML=html;
+  buildGiftEditors();
+}
+
+function buildGiftEditors(){
+  const w=document.getElementById('giftEditorWrap');
+  if(!w) return;
+  w.innerHTML='';
+  C.gifts.forEach((g,i)=>{
+    let preview='';
+    if(g.type==='image'&&g.imageData) preview=`<img src="${g.imageData}" class="preview-img">`;
+    else preview=`<span style="font-size:30px">${g.emoji}</span>`;
+
+    w.innerHTML+=`
+    <div class="gbox" id="gbox${i}" draggable="true" ondragstart="dragGift(event,${i})" ondragover="event.preventDefault()" ondrop="dropGift(event,${i})">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="gtitle">Hediye ${i+1}</div>
+        <div>
+          ${i>0?`<button class="btn btn-blue btn-sm" onclick="moveGift(${i},-1)">⬆</button>`:''}
+          ${i<C.gifts.length-1?`<button class="btn btn-blue btn-sm" onclick="moveGift(${i},1)">⬇</button>`:''}
+          <button class="btn btn-red btn-sm" onclick="removeGift(${i})">🗑</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;margin:8px 0">
+        <div>${preview}</div>
+        <div style="flex:1">
+          <label>Görsel Tipi</label>
+          <select onchange="C.gifts[${i}].type=this.value;buildGiftEditors();renderGifts();">
+            <option value="emoji" ${g.type==='emoji'?'selected':''}>😀 Emoji</option>
+            <option value="image" ${g.type==='image'?'selected':''}>🖼 Görsel</option>
+          </select>
+        </div>
+      </div>
+      ${g.type==='emoji'?`
+        <label>Emoji</label>
+        <input type="text" value="${g.emoji}" style="font-size:22px" oninput="C.gifts[${i}].emoji=this.value;renderGifts();">
+      `:`
+        <button class="btn btn-gold btn-sm" onclick="triggerUpload(${i})">📁 Görsel Yükle</button>
+        ${g.imageData?`<button class="btn btn-red btn-sm" onclick="C.gifts[${i}].imageData='';C.gifts[${i}].type='emoji';buildGiftEditors();renderGifts();">❌ Görseli Kaldır</button>`:''}
+      `}
+      <div class="inline">
+        <div><label>İsim</label><input type="text" value="${g.name}" oninput="C.gifts[${i}].name=this.value;renderGifts();"></div>
+        <div><label>Değer</label><input type="text" value="${g.value}" oninput="C.gifts[${i}].value=this.value;renderGifts();"></div>
+      </div>
+      <div class="inline">
+        <div><label>Kart Rengi</label><input type="color" value="${g.color}" onchange="C.gifts[${i}].color=this.value;renderGifts();"></div>
+      </div>
+    </div>`;
+  });
+}
+
+function triggerUpload(idx){
+  uploadIdx=idx;
+  document.getElementById('imgUpload').click();
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('imgUpload').addEventListener('change',function(e){
+    const file=e.target.files[0];
+    if(!file||uploadIdx<0) return;
+    resizeImg(file,120,dataUrl=>{
+      C.gifts[uploadIdx].type='image';
+      C.gifts[uploadIdx].imageData=dataUrl;
+      renderGifts();buildGiftEditors();saveToStorage();
+    });
+    this.value='';
+  });
+});
+
+function resizeImg(file,maxSz,cb){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      let w=img.width,h=img.height;
+      if(w>maxSz||h>maxSz){if(w>h){h=h*maxSz/w;w=maxSz}else{w=w*maxSz/h;h=maxSz}}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      cb(canvas.toDataURL('image/png',0.85));
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function addGift(){
+  C.gifts.push({type:'emoji',emoji:'🎀',name:'YENİ',value:'0 Coin',color:'#ff69b4',imageData:''});
+  buildGiftEditors();renderGifts();saveToStorage();
+}
+function removeGift(i){
+  if(C.gifts.length<=1){notify('⚠️ En az 1 hediye olmalı!');return;}
+  C.gifts.splice(i,1);buildGiftEditors();renderGifts();saveToStorage();
+}
+function moveGift(i,dir){
+  const j=i+dir;
+  if(j<0||j>=C.gifts.length)return;
+  [C.gifts[i],C.gifts[j]]=[C.gifts[j],C.gifts[i]];
+  buildGiftEditors();renderGifts();saveToStorage();
+}
+function dragGift(e,i){e.dataTransfer.setData('text/plain',i);}
+function dropGift(e,j){
+  e.preventDefault();
+  const i=parseInt(e.dataTransfer.getData('text/plain'));
+  if(i===j)return;
+  const item=C.gifts.splice(i,1)[0];
+  C.gifts.splice(j,0,item);
+  buildGiftEditors();renderGifts();saveToStorage();
+}
+
+// --- LİSTE TAB ---
+function buildTabList(){
+  const p=document.getElementById('tList');
+  let html='';
+  for(let n=1;n<=3;n++){
+    const L=C.lists[n];
+    const icons=['','🏆','⚡','🌟'];
+    html+=`
+    <div class="accordion" id="acc${n}">
+      <div class="accordion-head" onclick="toggleAcc(${n})">${icons[n]} Liste ${n} <span class="arrow">▼</span></div>
+      <div class="accordion-body">
+        <label>Başlık</label>
+        <input type="text" id="cLT${n}" value="${L.title}" oninput="C.lists[${n}].title=this.value;renderList(${n});">
+        <h3>✨ Neon Ayarı</h3>
+        <div class="inline">
+          <div><label>Renk</label><input type="color" id="cLN${n}" value="${L.neonColor}" onchange="C.lists[${n}].neonColor=this.value;renderList(${n});saveToStorage();"></div>
+          <div><label>Yoğunluk</label><input type="range" id="cLI${n}" min="0" max="200" value="${L.intensity}" oninput="C.lists[${n}].intensity=+this.value;renderList(${n});"></div>
+        </div>
+        <div class="inline">
+          <div><label>Blur</label><input type="range" id="cLB${n}" min="0" max="300" value="${L.blur}" oninput="C.lists[${n}].blur=+this.value;renderList(${n});"></div>
+          <div><label>Titreşim Hızı</label><input type="range" id="cLFS${n}" min="5" max="80" value="${L.flickerSpeed*10}" oninput="C.lists[${n}].flickerSpeed=this.value/10;renderList(${n});"></div>
+        </div>
+        <label><input type="checkbox" id="cLF${n}" ${L.flicker?'checked':''} onchange="C.lists[${n}].flicker=this.checked;renderList(${n});saveToStorage();"> Neon Titreşim</label>
+        <h3>👥 Oyuncular</h3>
+        <div id="plEdit${n}"></div>
+        <div style="margin-top:8px">
+          <button class="btn btn-green btn-sm" onclick="addPlayer(${n})">➕ Oyuncu Ekle</button>
+          <button class="btn btn-pink btn-sm" onclick="refreshListAnim(${n})">🔄 Animasyonlu Güncelle</button>
+          <button class="btn btn-blue btn-sm" onclick="saveToStorage();notify('💾 Kaydedildi!')">💾 Kaydet</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  p.innerHTML=html;
+  for(let n=1;n<=3;n++) buildPlayerEditors(n);
+}
+
+function toggleAcc(n){document.getElementById('acc'+n).classList.toggle('open');}
+
+function buildPlayerEditors(n){
+  const w=document.getElementById('plEdit'+n);
+  if(!w) return;
+  w.innerHTML='';
+  C.lists[n].players.forEach((p,i)=>{
+    w.innerHTML+=`<div class="row">
+      <input type="text" value="${p.name}" oninput="C.lists[${n}].players[${i}].name=this.value;renderList(${n});">
+      <input type="number" value="${p.score}" style="width:75px" oninput="C.lists[${n}].players[${i}].score=+this.value||0;renderList(${n});">
+      <button class="cbtn" onclick="removePlayer(${n},${i})">×</button>
+    </div>`;
+  });
+}
+
+function addPlayer(n){
+  C.lists[n].players.push({name:'YeniOyuncu',score:0});
+  buildPlayerEditors(n);renderList(n);
+}
+function removePlayer(n,i){
+  C.lists[n].players.splice(i,1);
+  buildPlayerEditors(n);renderList(n);
+}
+function refreshListAnim(n){
+  const body=document.getElementById('lb'+n);
+  body.style.opacity='0';body.style.transform='translateY(15px)';
+  setTimeout(()=>{renderList(n);body.style.transition='all .4s';body.style.opacity='1';body.style.transform='translateY(0)';},300);
+}
+
+// --- ANİMASYON TAB ---
+function buildTabAnim(){
+  const p=document.getElementById('tAnim');
+  p.innerHTML=`
+    <h3>🎁 Hediye Kartı Animasyonu</h3>
+    <select id="cGiftAnim" onchange="C.giftAnim=this.value;renderGifts();saveToStorage();">
+      <option value="float" ${C.giftAnim==='float'?'selected':''}>🫧 Süzülme (Float)</option>
+      <option value="spin" ${C.giftAnim==='spin'?'selected':''}>🔄 3D Dönüş (Spin)</option>
+      <option value="pulse" ${C.giftAnim==='pulse'?'selected':''}>💓 Nabız (Pulse)</option>
+      <option value="bounce" ${C.giftAnim==='bounce'?'selected':''}>⬆️ Zıplama (Bounce)</option>
+      <option value="swing" ${C.giftAnim==='swing'?'selected':''}>🎪 Sallanma (Swing)</option>
+      <option value="jello" ${C.giftAnim==='jello'?'selected':''}>🍮 Jöle (Jello)</option>
+      <option value="flip" ${C.giftAnim==='flip'?'selected':''}>🔃 Ters Dönüş (Flip)</option>
+      <option value="glitch" ${C.giftAnim==='glitch'?'selected':''}>⚡ Glitch</option>
+    </select>
+
+    <h3>📋 Liste Satır Animasyonu</h3>
+    <select id="cListAnim" onchange="C.listAnim=this.value;applyAll();saveToStorage();">
+      <option value="slideL" ${C.listAnim==='slideL'?'selected':''}>⬅️ Soldan Kayma</option>
+      <option value="slideR" ${C.listAnim==='slideR'?'selected':''}>➡️ Sağdan Kayma</option>
+      <option value="fadeUp" ${C.listAnim==='fadeUp'?'selected':''}>⬆️ Alttan Belirme</option>
+      <option value="pop" ${C.listAnim==='pop'?'selected':''}>💥 Pop-in</option>
+      <option value="flipIn" ${C.listAnim==='flipIn'?'selected':''}>🔃 Flip-in</option>
+      <option value="bounceIn" ${C.listAnim==='bounceIn'?'selected':''}>🏀 Bounce-in</option>
+    </select>
+
+    <h3>🔗 Widget Giriş Animasyonları</h3>
+    <p style="color:#888;font-size:10px;margin-bottom:8px">Her widget ayrı ayrı ayarlanabilir</p>
+
+    <label>🎁 Hediye Widget</label>
+    <select onchange="C.widgetAnims.gifts=this.value;applyWidgetAnims();saveToStorage();">
+      ${widgetAnimOpts('gifts')}
+    </select>
+
+    <label>🏆 Liste 1 Widget</label>
+    <select onchange="C.widgetAnims.list1=this.value;applyWidgetAnims();saveToStorage();">
+      ${widgetAnimOpts('list1')}
+    </select>
+
+    <label>⚡ Liste 2 Widget</label>
+    <select onchange="C.widgetAnims.list2=this.value;applyWidgetAnims();saveToStorage();">
+      ${widgetAnimOpts('list2')}
+    </select>
+
+    <label>🌟 Liste 3 Widget</label>
+    <select onchange="C.widgetAnims.list3=this.value;applyWidgetAnims();saveToStorage();">
+      ${widgetAnimOpts('list3')}
+    </select>
+
+    <hr class="sep">
+    <button class="btn btn-pink" onclick="replayAllAnims()">🎬 Tüm Animasyonları Tekrar Oynat</button>
+  `;
+}
+
+function widgetAnimOpts(key){
+  const opts=[
+    ['fadeIn','🌫 Fade In'],
+    ['slideDown','⬇️ Yukarıdan Kayma'],
+    ['slideUp','⬆️ Aşağıdan Kayma'],
+    ['zoomIn','🔍 Zoom In'],
+    ['rotateIn','🔄 Dönerek Gelme'],
+    ['bounceIn','🏀 Bounce In'],
+    ['flipIn','🔃 Flip In']
+  ];
+  return opts.map(o=>`<option value="${o[0]}" ${C.widgetAnims[key]===o[0]?'selected':''}>${o[1]}</option>`).join('');
+}
+
+function replayAllAnims(){
+  document.querySelectorAll('.widget-enter').forEach(el=>{
+    el.style.animation='none';
+    el.offsetHeight; // reflow
+    el.style.animation='';
+  });
+  document.querySelectorAll('.prow').forEach(el=>{
+    el.style.animation='none';
+    el.offsetHeight;
+    el.style.animation='';
+  });
+  notify('🎬 Animasyonlar tekrar oynatıldı!');
+}
+
+// --- WIDGET TAB ---
+function buildTabWidget(){
+  const base=window.location.href.split('?')[0];
+  const p=document.getElementById('tWidget');
+  p.innerHTML=`
+    <h3>🔗 Widget Linkleri</h3>
+    <p style="color:#888;font-size:10px;margin-bottom:12px">Bu linkleri OBS Browser Source veya yayın yazılımınıza ekleyin. Ayarları değiştirdiğinizde widget'lar otomatik güncellenir.</p>
+
+    <label>🎁 Hediye Galerisi Widget</label>
+    <div class="widget-url-box" id="wurl-gifts">${base}?widget=gifts</div>
+    <button class="btn btn-blue btn-sm" onclick="copyUrl('gifts')">📋 Kopyala</button>
+
+    <label>🏆 Liste 1 Widget</label>
+    <div class="widget-url-box" id="wurl-list1">${base}?widget=list1</div>
+    <button class="btn btn-blue btn-sm" onclick="copyUrl('list1')">📋 Kopyala</button>
+
+    <label>⚡ Liste 2 Widget</label>
+    <div class="widget-url-box" id="wurl-list2">${base}?widget=list2</div>
+    <button class="btn btn-blue btn-sm" onclick="copyUrl('list2')">📋 Kopyala</button>
+
+    <label>🌟 Liste 3 Widget</label>
+    <div class="widget-url-box" id="wurl-list3">${base}?widget=list3</div>
+    <button class="btn btn-blue btn-sm" onclick="copyUrl('list3')">📋 Kopyala</button>
+
+    <hr class="sep">
+    <h3>📖 Kullanım</h3>
+    <div style="color:#aaa;font-size:10px;line-height:1.8;font-family:'Orbitron',sans-serif">
+      <p>1. İstediğiniz widget linkini kopyalayın</p>
+      <p>2. OBS → Kaynaklar → <b>Browser Source</b> ekleyin</p>
+      <p>3. URL kısmına widget linkini yapıştırın</p>
+      <p>4. Genişlik/Yükseklik ayarlayın (ör: 400x300)</p>
+      <p>5. Ana sayfada yaptığınız değişiklikler<br>&nbsp;&nbsp;&nbsp;widget'lara <b>otomatik yansır</b> (2sn)</p>
+    </div>
+
+    <hr class="sep">
+    <h3>⚡ Hızlı Test</h3>
+    <button class="btn btn-gold btn-sm" onclick="window.open(getBase()+'?widget=gifts','_blank','width=800,height=300')">🎁 Hediye Widget Aç</button>
+    <button class="btn btn-gold btn-sm" onclick="window.open(getBase()+'?widget=list1','_blank','width=400,height=400')">🏆 Liste 1 Aç</button>
+    <button class="btn btn-gold btn-sm" onclick="window.open(getBase()+'?widget=list2','_blank','width=400,height=400')">⚡ Liste 2 Aç</button>
+    <button class="btn btn-gold btn-sm" onclick="window.open(getBase()+'?widget=list3','_blank','width=400,height=400')">🌟 Liste 3 Aç</button>
+  `;
+}
+
+function getBase(){return window.location.href.split('?')[0];}
+function copyUrl(name){
+  const url=getBase()+'?widget='+name;
+  navigator.clipboard.writeText(url).then(()=>notify('📋 Link kopyalandı!')).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();notify('📋 Link kopyalandı!');
+  });
+}
+
+// --- TEMA TAB ---
+function buildTabTema(){
+  const p=document.getElementById('tTema');
+  p.innerHTML=`
+    <h3>🎨 Arka Plan</h3>
+    <div class="inline">
+      <div><label>Renk</label><input type="color" id="cBgColor" value="${C.bg.color}" onchange="C.bg.color=this.value;applyBg();saveToStorage();"></div>
+      <div><label>Saydamlık (${C.bg.opacity}%)</label><input type="range" id="cBgOp" min="0" max="100" value="${C.bg.opacity}" oninput="C.bg.opacity=+this.value;applyBg();this.previousElementSibling.textContent='Saydamlık ('+this.value+'%)'"></div>
+    </div>
+
+    <h3>🌟 Parçacıklar</h3>
+    <label>Sayı (${C.particles})</label>
+    <input type="range" id="cPart" min="0" max="80" value="${C.particles}" oninput="C.particles=+this.value;genParticles();this.previousElementSibling.textContent='Sayı ('+this.value+')'">
+
+    <h3>⭐ Kayan Yıldızlar</h3>
+    <label>Sayı (${C.shootingStars})</label>
+    <input type="range" id="cStars" min="0" max="20" value="${C.shootingStars}" oninput="C.shootingStars=+this.value;genStars();this.previousElementSibling.textContent='Sayı ('+this.value+')'">
+
+    <hr class="sep">
+    <h3>💾 Kayıt İşlemleri</h3>
+    <button class="btn btn-green" onclick="saveToStorage();notify('✅ Tüm ayarlar kaydedildi!')">💾 Kaydet</button>
+    <button class="btn btn-pink" onclick="exportConfig()">📤 Dışa Aktar (JSON)</button>
+    <button class="btn btn-blue" onclick="document.getElementById('importFile').click()">📥 İçe Aktar</button>
+    <button class="btn btn-red" onclick="resetAll()">🗑 Fabrika Ayarları</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importConfig(this)">
+  `;
+}
+
+// ============================================================
+//  PARÇACIKLAR & YILDIZLAR
+// ============================================================
+function genParticles(){
+  const c=document.getElementById('particles');c.innerHTML='';
+  const colors=['#ff0080','#00d4ff','#00ff88','#b200ff','#ffd700','#ff4444'];
+  for(let i=0;i<C.particles;i++){
+    const d=document.createElement('div');d.className='particle';
+    const sz=Math.random()*6+2;const cl=colors[Math.floor(Math.random()*colors.length)];
+    d.style.cssText=`width:${sz}px;height:${sz}px;background:${cl};box-shadow:0 0 ${sz*2}px ${cl};left:${Math.random()*100}%;animation-duration:${Math.random()*10+8}s;animation-delay:${Math.random()*10}s`;
+    c.appendChild(d);
+  }
+}
+
+function genStars(){
+  const c=document.getElementById('stars');c.innerHTML='';
+  for(let i=0;i<C.shootingStars;i++){
+    const d=document.createElement('div');d.className='shooting-star';
+    d.style.cssText=`top:${Math.random()*50}%;left:${Math.random()*30}%;animation-duration:${Math.random()*3+2}s;animation-delay:${Math.random()*8}s`;
+    c.appendChild(d);
+  }
+}
+
+// ============================================================
+//  KAYIT / YÜKLEME / SYNC
+// ============================================================
+function saveToStorage(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(C));}catch(e){console.warn('Save error:',e);}
+}
+
+function loadFromStorage(){
+  try{
+    const s=localStorage.getItem(STORAGE_KEY);
+    if(s){
+      const loaded=JSON.parse(s);
+      // Merge with defaults to handle new fields
+      const def=getDefaultConfig();
+      C={...def,...loaded};
+      C.mainTitle={...def.mainTitle,...(loaded.mainTitle||{})};
+      C.subTitle={...def.subTitle,...(loaded.subTitle||{})};
+      C.bg={...def.bg,...(loaded.bg||{})};
+      C.widgetAnims={...def.widgetAnims,...(loaded.widgetAnims||{})};
+      if(loaded.lists){
+        for(let n=1;n<=3;n++){
+          if(loaded.lists[n]) C.lists[n]={...def.lists[n],...loaded.lists[n]};
+        }
+      }
+      if(loaded.gifts) C.gifts=loaded.gifts;
+    }
+  }catch(e){console.warn('Load error:',e);}
+}
+
+function exportConfig(){
+  const blob=new Blob([JSON.stringify(C,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='tiktok-overlay-config.json';a.click();
+  notify('📤 Config dosyası indirildi!');
+}
+
+function importConfig(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      C=JSON.parse(e.target.result);
+      saveToStorage();
+      buildPanel();applyAll();
+      notify('📥 Config başarıyla yüklendi!');
+    }catch(err){notify('❌ Geçersiz dosya!');}
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+function resetAll(){
+  if(!confirm('Tüm ayarlar sıfırlanacak. Emin misiniz?'))return;
+  localStorage.removeItem(STORAGE_KEY);
+  C=getDefaultConfig();
+  buildPanel();applyAll();
+  notify('🗑 Fabrika ayarlarına dönüldü!');
+}
+
+// Cross-tab sync
+window.addEventListener('storage',e=>{
+  if(e.key===STORAGE_KEY){loadFromStorage();applyAll();if(!widgetMode)buildPanel();}
+});
+
+// ============================================================
+//  PANEL TOGGLE & BİLDİRİM
+// ============================================================
+function togglePanel(){document.getElementById('cpanel').classList.toggle('open');}
+
+function notify(msg){
+  const d=document.createElement('div');
+  d.style.cssText='position:fixed;top:55px;right:20px;background:linear-gradient(135deg,#ff0080,#7928ca);color:#fff;padding:14px 22px;border-radius:14px;font-family:"Luckiest Guy",cursive;font-size:13px;z-index:99999;box-shadow:0 0 25px rgba(255,0,128,0.5);pointer-events:none;animation:wSlideDown .4s ease-out';
+  d.textContent=msg;document.body.appendChild(d);
+  setTimeout(()=>{d.style.opacity='0';d.style.transform='translateX(80px)';d.style.transition='all .4s';setTimeout(()=>d.remove(),400);},2200);
+}
+
+// ============================================================
+//  BAŞLATMA
+// ============================================================
+window.addEventListener('DOMContentLoaded',()=>{
+  loadFromStorage();
+  if(widgetMode){
+    setupWidgetMode();
+    applyAll();
+  } else {
+    buildPanel();
+    applyAll();
+  }
+});
+</script>
+</body>
+</html>
