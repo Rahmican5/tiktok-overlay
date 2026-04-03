@@ -338,7 +338,7 @@ function renderGifts(n){
   if(!G.gifts||!G.gifts.length)return;
   G.gifts.forEach((g,i)=>{
     const c=document.createElement('div');c.className='gc';c.setAttribute('data-a',G.ga||'float');
-   c.style.border=`3px solid ${g.cl}aa`;c.style.boxShadow=`0 0 20px ${g.cl}55,0 0 40px ${g.cl}22,inset 0 0 20px ${g.cl}20`;
+   c.style.border=`5px solid ${g.cl}aa`;c.style.boxShadow=`0 0 20px ${g.cl}55,0 0 40px ${g.cl}22,inset 0 0 20px ${g.cl}20`;
 c.style.background=`linear-gradient(135deg,${g.cl}30,${g.cl}15)`;
     let v=g.tp==='image'&&g.img?`<div class="gc-v"><img src="${g.img}"></div>`:`<div class="gc-v">${g.em||'🎁'}</div>`;
     c.innerHTML=`${v}<div class="gc-n">${g.nm||''}</div><div class="gc-vl">${g.vl||''}</div>`;
