@@ -3,81 +3,112 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TikTok Overlay Pro - Firebase</title>
+<title>TikTok Overlay Pro V2</title>
 <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
+:root{--accent:#ff0080;--accent2:#7928ca}
 body{background:#0a0a0a;font-family:'Luckiest Guy',cursive;min-height:100vh;overflow-x:hidden}
 body.wm{background:transparent!important}
-body.wm .ctrl-btn,body.wm .particles,body.wm .stars,body.wm #mainView .glow-line,body.wm #mainView .sub-area,body.wm #mainView .foot-area,body.wm .fb-status{display:none}
+body.wm .ctrl-btn,body.wm .particles,body.wm .stars,body.wm #mainV .glow-line,body.wm #mainV .sub-area,body.wm #mainV .foot-area,body.wm .fbs{display:none}
 
-/* Firebase durum */
-.fb-status{position:fixed;bottom:10px;left:10px;z-index:9998;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.7);padding:6px 14px;border-radius:20px;font-family:'Orbitron',sans-serif;font-size:9px;color:#888}
-.fb-dot{width:8px;height:8px;border-radius:50%}
-.fb-dot.ok{background:#00ff88;box-shadow:0 0 8px #00ff88}
-.fb-dot.err{background:#ff4444;box-shadow:0 0 8px #ff4444}
-.fb-dot.wait{background:#ffd700;box-shadow:0 0 8px #ffd700;animation:blinker 1s linear infinite}
-@keyframes blinker{50%{opacity:.3}}
+/* Firebase Status */
+.fbs{position:fixed;bottom:10px;left:10px;z-index:9998;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);padding:8px 16px;border-radius:20px;font-family:'Orbitron',sans-serif;font-size:9px;color:#888;border:1px solid rgba(255,255,255,.05)}
+.fbd{width:8px;height:8px;border-radius:50%}
+.fbd.ok{background:#00ff88;box-shadow:0 0 10px #00ff88}
+.fbd.err{background:#ff4444;box-shadow:0 0 10px #ff4444}
+.fbd.wait{background:#ffd700;box-shadow:0 0 10px #ffd700;animation:blnk 1s linear infinite}
+@keyframes blnk{50%{opacity:.3}}
 
-.ctrl-btn{position:fixed;top:10px;right:10px;z-index:10000;background:linear-gradient(135deg,#ff0080,#7928ca);border:none;color:#fff;padding:14px 24px;border-radius:30px;cursor:pointer;font-family:'Luckiest Guy',cursive;font-size:14px;box-shadow:0 0 25px rgba(255,0,128,.5);transition:all .3s;letter-spacing:1px}
-.ctrl-btn:hover{transform:scale(1.1);box-shadow:0 0 40px rgba(255,0,128,.8)}
+/* Control Button */
+.ctrl-btn{position:fixed;top:12px;right:12px;z-index:10000;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;padding:14px 26px;border-radius:30px;cursor:pointer;font-family:'Luckiest Guy',cursive;font-size:14px;box-shadow:0 0 30px rgba(255,0,128,.4);transition:all .3s;letter-spacing:1px}
+.ctrl-btn:hover{transform:scale(1.1);box-shadow:0 0 50px rgba(255,0,128,.7)}
 
-/* Panel */
-.pnl{position:fixed;top:0;right:-560px;width:540px;height:100vh;background:rgba(5,5,20,.98);border-left:2px solid #ff0080;z-index:9999;transition:right .5s cubic-bezier(.68,-.55,.265,1.55);overflow-y:auto;padding:12px 20px 40px}
+/* ═══════ PANEL ═══════ */
+.pnl{position:fixed;top:0;right:-580px;width:560px;height:100vh;background:linear-gradient(180deg,rgba(8,4,28,.99),rgba(5,2,18,.99));border-left:1px solid rgba(255,0,128,.2);z-index:9999;transition:right .5s cubic-bezier(.68,-.55,.265,1.55);overflow-y:auto;padding:0}
 .pnl.open{right:0}
-.pnl::-webkit-scrollbar{width:5px}
-.pnl::-webkit-scrollbar-thumb{background:rgba(255,0,128,.4);border-radius:5px}
-.pnl h3{color:#ff0080;margin:18px 0 8px;font-size:13px;letter-spacing:2px;border-bottom:1px solid rgba(255,0,128,.2);padding-bottom:7px;font-family:'Luckiest Guy',cursive}
-.pnl label{color:#999;font-size:10px;display:block;margin-bottom:3px;font-family:'Orbitron',sans-serif}
-.pnl input[type=text],.pnl input[type=number],.pnl select{width:100%;padding:8px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,0,128,.25);border-radius:8px;color:#fff;font-family:'Orbitron',sans-serif;font-size:11px;outline:none;margin-bottom:8px;transition:border .3s}
-.pnl input:focus,.pnl select:focus{border-color:#ff0080;box-shadow:0 0 8px rgba(255,0,128,.3)}
-.pnl input[type=color]{width:45px;height:32px;border:none;border-radius:6px;cursor:pointer;background:transparent;padding:0}
-.pnl input[type=range]{width:100%;accent-color:#ff0080}
-.bt{border:none;color:#fff;padding:9px 18px;border-radius:18px;cursor:pointer;font-family:'Luckiest Guy',cursive;font-size:11px;margin:3px;transition:all .3s;display:inline-flex;align-items:center;gap:5px}
-.bt:hover{transform:scale(1.05)}
+.pnl::-webkit-scrollbar{width:4px}
+.pnl::-webkit-scrollbar-thumb{background:linear-gradient(var(--accent),var(--accent2));border-radius:4px}
+.pnl-head{background:linear-gradient(135deg,rgba(255,0,128,.15),rgba(121,40,202,.1));padding:18px 22px 14px;border-bottom:1px solid rgba(255,0,128,.15);position:sticky;top:0;z-index:10;backdrop-filter:blur(20px)}
+.pnl-head h2{font-size:16px;color:#fff;letter-spacing:2px;display:flex;align-items:center;gap:8px}
+.pnl-head .fb-ind{font-size:9px;font-family:'Orbitron',sans-serif;padding:4px 10px;border-radius:12px;margin-left:auto}
+.pnl-head .fb-ind.ok{background:rgba(0,255,136,.15);color:#00ff88;border:1px solid rgba(0,255,136,.3)}
+.pnl-head .fb-ind.err{background:rgba(255,68,68,.15);color:#ff4444;border:1px solid rgba(255,68,68,.3)}
+.pnl-body{padding:12px 20px 40px}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px}
+.tab{padding:8px 14px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);color:rgba(255,255,255,.5);border-radius:12px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;transition:all .3s;white-space:nowrap}
+.tab:hover{background:rgba(255,0,128,.08);color:var(--accent);border-color:rgba(255,0,128,.2)}
+.tab.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:0 0 15px rgba(255,0,128,.25)}
+.tp{display:none}.tp.on{display:block}
+
+/* Section Cards */
+.scard{background:linear-gradient(135deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;margin-bottom:14px;transition:border-color .3s}
+.scard:hover{border-color:rgba(255,0,128,.15)}
+.scard h3{color:var(--accent);font-size:12px;letter-spacing:2px;margin-bottom:12px;font-family:'Luckiest Guy',cursive;display:flex;align-items:center;gap:8px}
+.scard h3::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,0,128,.3),transparent)}
+
+/* Form Elements */
+.pnl label{color:rgba(255,255,255,.5);font-size:10px;display:block;margin-bottom:4px;font-family:'Orbitron',sans-serif;letter-spacing:.5px}
+.pnl input[type=text],.pnl input[type=number],.pnl select{width:100%;padding:10px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-size:11px;outline:none;margin-bottom:10px;transition:all .3s}
+.pnl input:focus,.pnl select:focus{border-color:var(--accent);box-shadow:0 0 12px rgba(255,0,128,.15);background:rgba(255,0,128,.03)}
+.pnl input[type=color]{width:45px;height:36px;border:2px solid rgba(255,255,255,.1);border-radius:10px;cursor:pointer;background:transparent;padding:2px}
+.pnl input[type=range]{width:100%;accent-color:var(--accent);margin:4px 0 8px}
+.pnl input[type=checkbox]{accent-color:var(--accent);margin-right:6px}
+
+/* Buttons */
+.bt{border:none;color:#fff;padding:10px 20px;border-radius:12px;cursor:pointer;font-family:'Luckiest Guy',cursive;font-size:11px;margin:3px;transition:all .3s;display:inline-flex;align-items:center;gap:6px;letter-spacing:.5px}
+.bt:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(0,0,0,.3)}
 .bt-pk{background:linear-gradient(135deg,#ff0080,#7928ca)}
 .bt-gn{background:linear-gradient(135deg,#00ff88,#00aa55);color:#000}
 .bt-rd{background:linear-gradient(135deg,#ff4444,#cc0000)}
 .bt-bl{background:linear-gradient(135deg,#00d4ff,#0088cc)}
 .bt-gd{background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000}
-.bt-sm{padding:5px 12px;font-size:10px}
-hr.sp{border:none;border-top:1px solid rgba(255,0,128,.15);margin:15px 0}
-.inl{display:flex;gap:8px;align-items:center}.inl>*{flex:1}
+.bt-sm{padding:6px 14px;font-size:10px;border-radius:10px}
+hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
+.inl{display:flex;gap:10px;align-items:center}.inl>*{flex:1}
 .rw{display:flex;gap:8px;align-items:center;margin-bottom:6px}.rw input{flex:1}
-.xb{background:#ff4444;border:none;color:#fff;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.gbx{background:rgba(255,255,255,.02);border:1px solid rgba(255,0,128,.12);border-radius:10px;padding:12px;margin-bottom:10px}
-.gbx .gtt{color:#ff0080;font-size:11px;font-weight:700;margin-bottom:8px;font-family:'Luckiest Guy',cursive}
-.pimg{width:50px;height:50px;border-radius:8px;object-fit:cover;border:2px solid rgba(255,0,128,.3)}
-.acc{background:rgba(255,0,128,.06);border:1px solid rgba(255,0,128,.15);border-radius:10px;margin:8px 0;overflow:hidden}
-.acc-h{padding:10px 15px;cursor:pointer;color:#ff0080;font-size:12px;font-family:'Luckiest Guy',cursive;display:flex;justify-content:space-between;align-items:center}
-.acc-h:hover{background:rgba(255,0,128,.04)}
-.acc-b{max-height:0;overflow:hidden;transition:max-height .4s,padding .3s;padding:0 15px}
-.acc.op .acc-b{max-height:3000px;padding:12px 15px 15px}
-.acc-h .ar{transition:transform .3s;font-size:10px}
-.acc.op .acc-h .ar{transform:rotate(180deg)}
-.wurl{background:rgba(0,0,0,.4);border:1px solid rgba(0,212,255,.3);border-radius:8px;padding:10px 12px;margin:8px 0;word-break:break-all;color:#00d4ff;font-size:10px;font-family:monospace;line-height:1.5}
-.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;padding-top:5px}
-.tab{padding:7px 12px;border:1px solid rgba(255,0,128,.2);background:rgba(255,0,128,.05);color:#ff0080;border-radius:16px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;transition:all .3s;white-space:nowrap}
-.tab.on{background:linear-gradient(135deg,#ff0080,#7928ca);color:#fff;border-color:transparent;box-shadow:0 0 12px rgba(255,0,128,.3)}
-.tp{display:none}.tp.on{display:block}
+.xb{background:rgba(255,68,68,.2);border:1px solid rgba(255,68,68,.3);color:#ff4444;width:26px;height:26px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s}
+.xb:hover{background:rgba(255,68,68,.4)}
 
-/* Partiküller */
+/* Gift Box Editor */
+.gbx{background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px;margin-bottom:10px;transition:all .3s}
+.gbx:hover{border-color:rgba(255,0,128,.15)}
+.gbx .gtt{color:var(--accent);font-size:11px;margin-bottom:8px;font-family:'Luckiest Guy',cursive;display:flex;justify-content:space-between;align-items:center}
+.pimg{width:50px;height:50px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,0,128,.2)}
+
+/* Accordion */
+.acc{background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;margin:8px 0;overflow:hidden;transition:border-color .3s}
+.acc:hover{border-color:rgba(255,0,128,.12)}
+.acc-h{padding:12px 16px;cursor:pointer;color:rgba(255,255,255,.7);font-size:12px;font-family:'Luckiest Guy',cursive;display:flex;justify-content:space-between;align-items:center;transition:all .3s}
+.acc-h:hover{color:var(--accent);background:rgba(255,0,128,.03)}
+.acc-b{max-height:0;overflow:hidden;transition:max-height .5s ease,padding .3s;padding:0 16px}
+.acc.op .acc-b{max-height:4000px;padding:14px 16px 16px}
+.acc-h .ar{transition:transform .3s;font-size:10px;color:var(--accent)}
+.acc.op .acc-h .ar{transform:rotate(180deg)}
+
+/* Widget URL */
+.wurl{background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.2);border-radius:10px;padding:12px 14px;margin:8px 0;word-break:break-all;color:#00d4ff;font-size:10px;font-family:monospace;line-height:1.6;transition:border-color .3s}
+.wurl:hover{border-color:rgba(0,212,255,.5)}
+
+/* ═══════ PARÇACIKLAR ═══════ */
 .particles,.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
 .ptc{position:absolute;border-radius:50%;animation:ptcF linear infinite;opacity:0}
 @keyframes ptcF{0%{transform:translateY(100vh) rotate(0);opacity:0}10%{opacity:.4}90%{opacity:.4}100%{transform:translateY(-10vh) rotate(720deg);opacity:0}}
 .star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;box-shadow:0 0 6px #fff,0 0 15px #ff0080;animation:starS linear infinite}
-@keyframes starS{0%{transform:translate(-80px,-80px);opacity:1}70%{opacity:1}100%{transform:translate(calc(100vw + 80px),calc(100vh + 80px));opacity:0}}
+@keyframes starS{0%{transform:translate(-80px,-80px);opacity:1}70%{opacity:1}100%{transform:translate(calc(100vw+80px),calc(100vh+80px));opacity:0}}
 
-/* Neon */
+/* Neon Flicker */
 .nfl{animation:fl var(--fs,3s) linear infinite}
 @keyframes fl{0%,19.9%,22%,62.9%,64%,64.9%,70%,100%{opacity:1}20%,21.9%,63%,63.9%,65%,69.9%{opacity:.33}}
 
-/* Hediye */
+/* ═══════ HEDİYE GALERİSİ ═══════ */
 .g-sec{position:relative;z-index:10;margin-bottom:25px}
-.g-tit{text-align:center;margin-bottom:20px}
-.g-tit span{font-size:36px;color:#fff}
+.g-tit{text-align:center;margin-bottom:18px}
+.g-tit span{color:#fff}
 .g-wrap{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;perspective:1200px}
 .gc{width:150px;height:190px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:all .5s cubic-bezier(.68,-.55,.265,1.55);overflow:hidden}
 .gc:hover{transform:translateY(-20px) scale(1.12) rotateY(15deg)!important;z-index:5}
@@ -87,8 +118,10 @@ hr.sp{border:none;border-top:1px solid rgba(255,0,128,.15);margin:15px 0}
 .gc-v img{width:70px;height:70px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(255,255,255,.4))}
 .gc-n{color:#fff;font-size:13px;text-align:center;letter-spacing:1px}
 .gc-vl{color:rgba(255,255,255,.6);font-size:10px;margin-top:4px;font-family:'Orbitron',sans-serif}
+
+/* Gift Animations */
 .gc[data-a=float]{animation:gFl 3s ease-in-out infinite}
-.gc[data-a=float]:nth-child(2){animation-delay:.4s}.gc[data-a=float]:nth-child(3){animation-delay:.8s}.gc[data-a=float]:nth-child(4){animation-delay:1.2s}.gc[data-a=float]:nth-child(5){animation-delay:1.6s}.gc[data-a=float]:nth-child(6){animation-delay:2s}.gc[data-a=float]:nth-child(7){animation-delay:2.4s}
+.gc[data-a=float]:nth-child(2){animation-delay:.4s}.gc[data-a=float]:nth-child(3){animation-delay:.8s}.gc[data-a=float]:nth-child(4){animation-delay:1.2s}.gc[data-a=float]:nth-child(5){animation-delay:1.6s}.gc[data-a=float]:nth-child(6){animation-delay:2s}
 @keyframes gFl{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
 .gc[data-a=pulse]{animation:gPl 2s ease-in-out infinite}@keyframes gPl{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 .gc[data-a=bounce]{animation:gBn 2s ease infinite}@keyframes gBn{0%,20%,50%,80%,100%{transform:translateY(0)}40%{transform:translateY(-25px)}60%{transform:translateY(-12px)}}
@@ -96,92 +129,121 @@ hr.sp{border:none;border-top:1px solid rgba(255,0,128,.15);margin:15px 0}
 .gc[data-a=jello]{animation:gJl 2s ease infinite}@keyframes gJl{0%,100%{transform:scale3d(1,1,1)}30%{transform:scale3d(1.15,.85,1)}40%{transform:scale3d(.85,1.15,1)}50%{transform:scale3d(1.08,.92,1)}65%{transform:scale3d(.97,1.03,1)}75%{transform:scale3d(1.02,.98,1)}}
 .gc[data-a=flip]{animation:gFlp 3s ease-in-out infinite}@keyframes gFlp{0%{transform:perspective(400px) rotateY(0)}40%{transform:perspective(400px) rotateY(180deg)}100%{transform:perspective(400px) rotateY(360deg)}}
 .gc[data-a=spin]{animation:gSp 5s linear infinite}@keyframes gSp{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
-.gc[data-a=glitch]{animation:gGl 3s steps(20) infinite}@keyframes gGl{0%,50%,100%{transform:translate(0)}10%{transform:translate(-2px,2px)}20%{transform:translate(2px,-2px)}30%{transform:translate(-1px,1px)}40%{transform:translate(1px,-1px)}}
+.gc[data-a=glitch]{animation:gGl 3s steps(20) infinite}@keyframes gGl{0%,50%,100%{transform:translate(0)}10%{transform:translate(-2px,2px)}20%{transform:translate(2px,-2px)}30%{transform:translate(-1px)}40%{transform:translate(1px,-1px)}}
 
-.glow-line{width:80%;max-width:600px;height:2px;margin:20px auto;background:linear-gradient(90deg,transparent,#ff0080,#00d4ff,#00ff88,transparent);border-radius:2px;box-shadow:0 0 10px rgba(255,0,128,.4);position:relative;z-index:10}
-.sub-area{text-align:center;margin:20px 0;position:relative;z-index:10}
-.sub-area span{font-size:24px;color:#fff}
+/* ═══════ DEKORATIF ═══════ */
+.glow-line{width:80%;max-width:600px;height:2px;margin:25px auto;background:linear-gradient(90deg,transparent,#ff0080,#00d4ff,#00ff88,transparent);border-radius:2px;box-shadow:0 0 10px rgba(255,0,128,.4);position:relative;z-index:10}
+.sub-area{text-align:center;margin:25px 0;position:relative;z-index:10}
+.sub-area span{color:#fff}
 
-/* Listeler */
+/* ═══════ BOARD / LİSTELER ═══════ */
 .boards{display:flex;gap:25px;justify-content:center;flex-wrap:wrap;position:relative;z-index:10;margin-top:25px}
-.brd{width:320px;border-radius:18px;overflow:hidden;position:relative}
+.brd{width:340px;border-radius:20px;overflow:hidden;position:relative}
 .brd-h{padding:16px 18px;text-align:center;position:relative;overflow:hidden}
 .brd-h h2{font-size:15px;letter-spacing:2px;color:#fff}
 .brd-h::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;animation:scnL 2s linear infinite}
 @keyframes scnL{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.brd-b{padding:8px 12px;min-height:180px}
-.pr{display:flex;align-items:center;padding:9px 12px;margin:5px 0;border-radius:10px;transition:all .4s cubic-bezier(.68,-.55,.265,1.55);opacity:0;animation-fill-mode:both}
-.pr:hover{transform:translateX(8px) scale(1.02)}
-.pr[data-a=slideL]{animation:rSL .6s ease-out both}@keyframes rSL{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:translateX(0)}}
-.pr[data-a=slideR]{animation:rSR .6s ease-out both}@keyframes rSR{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}
-.pr[data-a=fadeUp]{animation:rFU .6s ease-out both}@keyframes rFU{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-.pr[data-a=pop]{animation:rPp .5s cubic-bezier(.68,-.55,.265,1.55) both}@keyframes rPp{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
-.pr[data-a=flipIn]{animation:rFl .7s ease-out both}@keyframes rFl{from{opacity:0;transform:perspective(400px) rotateX(90deg)}to{opacity:1;transform:perspective(400px) rotateX(0)}}
-.pr[data-a=bounceIn]{animation:rBn .8s cubic-bezier(.215,.61,.355,1) both}@keyframes rBn{0%{opacity:0;transform:scale(.3)}50%{transform:scale(1.05)}70%{transform:scale(.95)}100%{opacity:1;transform:scale(1)}}
-.pr:nth-child(1){animation-delay:.05s}.pr:nth-child(2){animation-delay:.12s}.pr:nth-child(3){animation-delay:.19s}.pr:nth-child(4){animation-delay:.26s}.pr:nth-child(5){animation-delay:.33s}.pr:nth-child(6){animation-delay:.4s}.pr:nth-child(7){animation-delay:.47s}.pr:nth-child(8){animation-delay:.54s}
-.pk{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;margin-right:10px;flex-shrink:0;font-family:'Luckiest Guy',cursive}
-.pk.r1{background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000;box-shadow:0 0 12px rgba(255,215,0,.5);animation:rkG 1.5s ease-in-out infinite alternate}
-.pk.r2{background:linear-gradient(135deg,#c0c0c0,#808080);color:#000}.pk.r3{background:linear-gradient(135deg,#cd7f32,#8b4513);color:#fff}
-.pk.rd{background:rgba(255,255,255,.08);color:rgba(255,255,255,.5)}
-@keyframes rkG{from{box-shadow:0 0 12px rgba(255,215,0,.5)}to{box-shadow:0 0 30px rgba(255,215,0,.8),0 0 60px rgba(255,215,0,.3)}}
-.pn{color:#fff;font-size:13px;flex:1;letter-spacing:1px}
-.ps{font-size:15px;font-weight:900;flex-shrink:0}
+.brd-b{padding:10px 14px}
 
-/* Widget giriş animasyonları */
+/* ═══════ PODYUM / TAHT ═══════ */
+.podium{padding:10px 0}
+.throne-wrap{text-align:center;margin-bottom:12px}
+.throne{display:inline-block;position:relative;padding:20px 35px 16px;background:linear-gradient(180deg,rgba(255,215,0,.12),rgba(255,140,0,.05));border:2px solid rgba(255,215,0,.5);border-radius:16px;box-shadow:0 0 40px rgba(255,215,0,.2),inset 0 0 25px rgba(255,215,0,.08);min-width:180px}
+.throne::before{content:'👑';position:absolute;top:-28px;left:50%;transform:translateX(-50%);font-size:36px;filter:drop-shadow(0 0 12px rgba(255,215,0,.8));animation:crFloat 2s ease-in-out infinite}
+@keyframes crFloat{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-10px)}}
+.throne::after{content:'🪑';position:absolute;bottom:5px;right:8px;font-size:20px;opacity:.3}
+.throne .t-rank{font-size:11px;color:rgba(255,215,0,.6);font-family:'Orbitron',sans-serif;letter-spacing:2px;margin-bottom:4px}
+.throne .t-name{font-size:22px;color:#ffd700;text-shadow:0 0 15px rgba(255,215,0,.5),0 0 30px rgba(255,215,0,.2);letter-spacing:2px}
+.throne .t-score{font-size:26px;color:#ffd700;font-weight:900;text-shadow:0 0 20px rgba(255,215,0,.6);margin-top:4px;font-family:'Orbitron',sans-serif}
+.throne-sparkle{position:absolute;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;border-radius:16px}
+.throne-sparkle span{position:absolute;width:4px;height:4px;background:#ffd700;border-radius:50%;animation:sparkle 2s linear infinite}
+@keyframes sparkle{0%{opacity:0;transform:scale(0)}50%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(0)}}
+
+.runners{display:flex;justify-content:center;gap:16px;margin-top:8px}
+.runner{padding:14px 22px;border-radius:14px;text-align:center;min-width:130px;position:relative}
+.runner .r-badge{font-size:22px;margin-bottom:4px}
+.runner .r-rank{font-size:9px;font-family:'Orbitron',sans-serif;letter-spacing:2px;margin-bottom:2px}
+.runner .r-name{font-size:15px;letter-spacing:1px}
+.runner .r-score{font-size:17px;font-weight:900;margin-top:3px;font-family:'Orbitron',sans-serif}
+.runner-2{background:linear-gradient(180deg,rgba(192,192,192,.12),rgba(128,128,128,.04));border:2px solid rgba(192,192,192,.35);box-shadow:0 0 25px rgba(192,192,192,.12)}
+.runner-2 .r-rank,.runner-2 .r-name{color:#c0c0c0;text-shadow:0 0 10px rgba(192,192,192,.4)}
+.runner-2 .r-score{color:#e0e0e0;text-shadow:0 0 12px rgba(192,192,192,.5)}
+.runner-3{background:linear-gradient(180deg,rgba(205,127,50,.12),rgba(139,69,19,.04));border:2px solid rgba(205,127,50,.35);box-shadow:0 0 25px rgba(205,127,50,.12)}
+.runner-3 .r-rank,.runner-3 .r-name{color:#cd7f32;text-shadow:0 0 10px rgba(205,127,50,.4)}
+.runner-3 .r-score{color:#daa520;text-shadow:0 0 12px rgba(205,127,50,.5)}
+
+/* ═══════ KAYAN LİSTE ═══════ */
+.scroll-box{height:180px;overflow:hidden;position:relative;margin-top:10px;border-top:1px solid rgba(255,255,255,.05);padding-top:8px}
+.scroll-box::before,.scroll-box::after{content:'';position:absolute;left:0;width:100%;height:25px;z-index:2;pointer-events:none}
+.scroll-box::before{top:0;background:linear-gradient(to bottom,rgba(10,10,30,.9),transparent)}
+.scroll-box::after{bottom:0;background:linear-gradient(to top,rgba(10,10,30,.9),transparent)}
+.scroll-track{display:flex;flex-direction:column}
+.scroll-track.up{animation:tickUp var(--ss,25s) linear infinite}
+.scroll-track.down{animation:tickDown var(--ss,25s) linear infinite}
+.scroll-track.paused{animation-play-state:paused}
+@keyframes tickUp{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
+@keyframes tickDown{0%{transform:translateY(-50%)}100%{transform:translateY(0)}}
+
+.sr{display:flex;align-items:center;padding:8px 12px;margin:3px 0;border-radius:10px;transition:all .3s}
+.sr:hover{transform:translateX(5px)}
+.sr-rank{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;margin-right:10px;flex-shrink:0;font-family:'Orbitron',sans-serif;font-weight:900;background:rgba(255,255,255,.06);color:rgba(255,255,255,.5)}
+.sr-name{color:rgba(255,255,255,.8);font-size:12px;flex:1;letter-spacing:1px}
+.sr-score{font-size:13px;font-weight:900;flex-shrink:0;font-family:'Orbitron',sans-serif}
+
+/* Widget Enter Animations */
 .we[data-w=fadeIn]{animation:wFd 1s ease both}@keyframes wFd{from{opacity:0}to{opacity:1}}
 .we[data-w=slideDown]{animation:wSD .8s ease-out both}@keyframes wSD{from{opacity:0;transform:translateY(-60px)}to{opacity:1;transform:translateY(0)}}
 .we[data-w=slideUp]{animation:wSU .8s ease-out both}@keyframes wSU{from{opacity:0;transform:translateY(60px)}to{opacity:1;transform:translateY(0)}}
 .we[data-w=zoomIn]{animation:wZI .6s cubic-bezier(.68,-.55,.265,1.55) both}@keyframes wZI{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
-.we[data-w=rotateIn]{animation:wRI .8s ease-out both}@keyframes wRI{from{opacity:0;transform:rotate(-180deg) scale(.3)}to{opacity:1;transform:rotate(0) scale(1)}}
 .we[data-w=bounceIn]{animation:wBI 1s cubic-bezier(.215,.61,.355,1) both}@keyframes wBI{0%{opacity:0;transform:scale(.3)}40%{transform:scale(1.1)}60%{transform:scale(.9)}80%{transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
 .we[data-w=flipIn]{animation:wFI .8s ease-out both}@keyframes wFI{from{opacity:0;transform:perspective(400px) rotateY(90deg)}to{opacity:1;transform:perspective(400px) rotateY(0)}}
 
 .foot-area{text-align:center;margin-top:35px;position:relative;z-index:10}
-.foot-area p{font-family:'Orbitron',sans-serif;font-size:9px;color:rgba(255,255,255,.25);letter-spacing:3px}
+.foot-area p{font-family:'Orbitron',sans-serif;font-size:9px;color:rgba(255,255,255,.2);letter-spacing:3px}
 
-@media(max-width:768px){.boards{flex-direction:column;align-items:center}.brd{width:95%}.gc{width:120px;height:160px}.pnl{width:100%;right:-110%}}
+@media(max-width:768px){.boards{flex-direction:column;align-items:center}.brd{width:95%}.gc{width:120px;height:160px}.pnl{width:100%;right:-110%}.throne .t-name{font-size:16px}.runners{flex-direction:column;align-items:center}}
 </style>
 </head>
 <body>
-
 <div class="particles" id="particles"></div>
 <div class="stars" id="stars"></div>
 <input type="file" id="imgUp" accept="image/*" style="display:none">
+<div class="fbs"><div class="fbd wait" id="fbD"></div><span id="fbT">Bağlanıyor...</span></div>
+<button class="ctrl-btn" onclick="toggleP()">⚙️ AYARLAR</button>
 
-<!-- Firebase Durum -->
-<div class="fb-status"><div class="fb-dot wait" id="fbDot"></div><span id="fbTxt">Bağlanıyor...</span></div>
-
-<button class="ctrl-btn" onclick="togglePnl()">⚙️ AYARLAR</button>
-
-<!-- Panel -->
+<!-- PANEL -->
 <div class="pnl" id="pnl">
+<div class="pnl-head">
+<h2>⚙️ OVERLAY AYARLARI <span class="fb-ind" id="fbInd">...</span></h2>
+</div>
+<div class="pnl-body">
 <div class="tabs" id="tabBar"></div>
 <div id="tabPanes"></div>
 </div>
-
-<!-- Overlay -->
-<div id="mainView" style="position:relative;z-index:10;padding:20px">
-<div id="wGifts" class="g-sec we">
-<div class="g-tit"><span id="elMT"></span></div>
-<div class="g-wrap" id="gWrap"></div>
 </div>
+
+<!-- OVERLAY -->
+<div id="mainV" style="position:relative;z-index:10;padding:20px">
+<div id="wG1" class="g-sec we"></div>
+<div id="wG2" class="g-sec we"></div>
+<div id="wG3" class="g-sec we"></div>
 <div class="glow-line"></div>
 <div class="sub-area"><span id="elST"></span></div>
 <div class="boards" id="brdsAll">
-<div id="wL1" class="brd we"><div class="brd-h" id="bh1"><h2 id="lt1"></h2></div><div class="brd-b" id="lb1"></div></div>
-<div id="wL2" class="brd we"><div class="brd-h" id="bh2"><h2 id="lt2"></h2></div><div class="brd-b" id="lb2"></div></div>
-<div id="wL3" class="brd we"><div class="brd-h" id="bh3"><h2 id="lt3"></h2></div><div class="brd-b" id="lb3"></div></div>
+<div id="wL1" class="brd we"></div>
+<div id="wL2" class="brd we"></div>
+<div id="wL3" class="brd we"></div>
 </div>
 <div class="glow-line"></div>
 <div class="foot-area"><p id="elFT"></p></div>
 </div>
 
 <script>
-// ╔══════════════════════════════════════════════════╗
-// ║  🔥 FIREBASE CONFIG - BURAYA KENDİ BİLGİLERİNİ YAZ  ║
-// ╚══════════════════════════════════════════════════╝
+// ╔═══════════════════════════════════════════════════════╗
+// ║  🔥 FIREBASE CONFIG — KENDİ BİLGİLERİNİ BURAYA YAZ  ║
+// ╚═══════════════════════════════════════════════════════╝
 const firebaseConfig = {
- apiKey: "AIzaSyAfDdE3WmS3wx-Acz0WfEfwW5w2MLjTsms",
+  apiKey: "AIzaSyAfDdE3WmS3wx-Acz0WfEfwW5w2MLjTsms",
   authDomain: "tiktok-overlay-8cd75.firebaseapp.com",
   databaseURL: "https://tiktok-overlay-8cd75-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "tiktok-overlay-8cd75",
@@ -189,214 +251,178 @@ const firebaseConfig = {
   messagingSenderId: "156041390775",
   appId: "1:156041390775:web:be7153db5388ff97a4bb32"
 };
-// ═══════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════
 
-// Firebase Init
-let db, dbRef, firebaseOK = false;
-try {
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.database();
-  dbRef = db.ref('overlay');
-  firebaseOK = true;
-} catch(e) {
-  console.error('Firebase init hatası:', e);
-}
+let db,dbRef,fbOK=false;
+try{firebase.initializeApp(firebaseConfig);db=firebase.database();dbRef=db.ref('overlayV2');fbOK=true}catch(e){console.error(e)}
 
-// Widget Mode
-const QP = new URLSearchParams(location.search);
-const WM = QP.get('widget');
+const QP=new URLSearchParams(location.search);
+const WM=QP.get('widget');
 
-// Config
-let C = getDef();
+// ═══════ DEFAULT CONFIG ═══════
+let C=getDef();
 function getDef(){return{
-  mt:{text:'🎁 HEDİYE GALERİSİ 🎁',size:36,nc:'#ff0080',ni:100,nb:150,fl:true,fs:3},
   st:{text:'⚡ EN ÇOK HEDİYE GÖNDERENLER ⚡',size:24,nc:'#00d4ff',ni:80,nb:100,fl:false,fs:3},
   ft:'CANLI YAYIN • TIKTOK LIVE',
-  gifts:[
-    {tp:'emoji',em:'🌹',nm:'GÜL',vl:'1 Coin',cl:'#ff0080',img:''},
-    {tp:'emoji',em:'💎',nm:'ELMAS',vl:'100 Coin',cl:'#00d4ff',img:''},
-    {tp:'emoji',em:'🦁',nm:'ASLAN',vl:'500 Coin',cl:'#00ff88',img:''},
-    {tp:'emoji',em:'🚀',nm:'ROKET',vl:'1000 Coin',cl:'#b200ff',img:''},
-    {tp:'emoji',em:'👑',nm:'TAÇ',vl:'5000 Coin',cl:'#ffd700',img:''}
-  ],
-  ga:'float',la:'slideL',
-  wa:{gifts:'fadeIn',list1:'fadeIn',list2:'fadeIn',list3:'fadeIn'},
+  G:{
+    1:{title:'🎁 HEDİYE GALERİSİ 1',ts:30,nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
+      {tp:'emoji',em:'🌹',nm:'GÜL',vl:'1 Coin',cl:'#ff0080',img:''},
+      {tp:'emoji',em:'💎',nm:'ELMAS',vl:'100 Coin',cl:'#00d4ff',img:''},
+      {tp:'emoji',em:'🦁',nm:'ASLAN',vl:'500 Coin',cl:'#00ff88',img:''},
+      {tp:'emoji',em:'🚀',nm:'ROKET',vl:'1000 Coin',cl:'#b200ff',img:''},
+      {tp:'emoji',em:'👑',nm:'TAÇ',vl:'5000 Coin',cl:'#ffd700',img:''}
+    ]},
+    2:{title:'🎁 HEDİYE GALERİSİ 2',ts:28,nc:'#00d4ff',ni:100,nb:120,fl:false,fs:3,ga:'pulse',wa:'fadeIn',gifts:[
+      {tp:'emoji',em:'💝',nm:'KALP',vl:'10 Coin',cl:'#ff69b4',img:''},
+      {tp:'emoji',em:'⭐',nm:'YILDIZ',vl:'50 Coin',cl:'#ffd700',img:''},
+      {tp:'emoji',em:'🎵',nm:'MÜZİK',vl:'200 Coin',cl:'#9b59b6',img:''}
+    ]},
+    3:{title:'🎁 HEDİYE GALERİSİ 3',ts:28,nc:'#00ff88',ni:100,nb:120,fl:false,fs:3,ga:'bounce',wa:'fadeIn',gifts:[
+      {tp:'emoji',em:'🏆',nm:'KUPA',vl:'2000 Coin',cl:'#ffd700',img:''},
+      {tp:'emoji',em:'🌈',nm:'GÖKKUŞAĞI',vl:'3000 Coin',cl:'#ff0080',img:''}
+    ]}
+  },
   L:{
-    1:{t:'🏆 TOP OYUNCULAR',nc:'#ff0080',ni:100,nb:100,fl:true,fs:2.5,p:[
-      {n:'KralOyuncu',s:2500},{n:'NeonMaster',s:2100},{n:'GamerTR',s:1800},{n:'YıldızAvcı',s:1500},{n:'ShadowFox',s:1200}]},
-    2:{t:'⚡ HEDİYE KRALLARI',nc:'#00d4ff',ni:100,nb:100,fl:true,fs:3,p:[
-      {n:'DiamondKing',s:15000},{n:'GiftQueen',s:12000},{n:'RoseHero',s:9500},{n:'CoinMaster',s:7000},{n:'StarLight',s:5500}]},
-    3:{t:'🌟 GÜNÜN YILDIZLARI',nc:'#00ff88',ni:100,nb:100,fl:false,fs:3,p:[
-      {n:'EfsaneOyuncu',s:980},{n:'TurboGamer',s:870},{n:'PhoenixTR',s:750},{n:'CosmicRay',s:640},{n:'BlazeFire',s:520}]}
+    1:{t:'🏆 TOP OYUNCULAR',nc:'#ff0080',ni:100,nb:100,fl:true,fs:2.5,wa:'fadeIn',sd:'up',ss:25,p:[
+      {n:'KralOyuncu',s:2500},{n:'NeonMaster',s:2100},{n:'GamerTR',s:1800},{n:'YıldızAvcı',s:1500},{n:'ShadowFox',s:1200},{n:'TurboKing',s:1000},{n:'StormBlade',s:850}
+    ]},
+    2:{t:'⚡ HEDİYE KRALLARI',nc:'#00d4ff',ni:100,nb:100,fl:true,fs:3,wa:'fadeIn',sd:'down',ss:30,p:[
+      {n:'DiamondKing',s:15000},{n:'GiftQueen',s:12000},{n:'RoseHero',s:9500},{n:'CoinMaster',s:7000},{n:'StarLight',s:5500},{n:'MoonRider',s:4200}
+    ]},
+    3:{t:'🌟 GÜNÜN YILDIZLARI',nc:'#00ff88',ni:100,nb:100,fl:false,fs:3,wa:'fadeIn',sd:'up',ss:20,p:[
+      {n:'EfsaneOyuncu',s:980},{n:'TurboGamer',s:870},{n:'PhoenixTR',s:750},{n:'CosmicRay',s:640},{n:'BlazeFire',s:520}
+    ]}
   },
   bg:{c:'#0a0a0a',o:100},prt:25,str:5
 }}
 
-// Merge helper
-function merge(def, src){
-  if(!src) return def;
-  const out = {...def};
-  for(const k in src){
-    if(src[k]!==null && typeof src[k]==='object' && !Array.isArray(src[k]) && typeof def[k]==='object' && !Array.isArray(def[k])){
-      out[k] = merge(def[k], src[k]);
-    } else {
-      out[k] = src[k];
-    }
-  }
-  return out;
+// ═══════ MERGE ═══════
+function merge(d,s){if(!s)return d;const o={...d};for(const k in s){if(s[k]!==null&&typeof s[k]==='object'&&!Array.isArray(s[k])&&typeof d[k]==='object'&&!Array.isArray(d[k])){o[k]=merge(d[k],s[k])}else{o[k]=s[k]}}return o}
+function fixArrays(c){
+  for(let n=1;n<=3;n++){if(c.L&&c.L[n]&&c.L[n].p&&!Array.isArray(c.L[n].p))c.L[n].p=Object.values(c.L[n].p);
+    if(c.G&&c.G[n]&&c.G[n].gifts&&!Array.isArray(c.G[n].gifts))c.G[n].gifts=Object.values(c.G[n].gifts)}
 }
 
-// ════════════════════════════════════════
-//  FIREBASE READ / WRITE
-// ════════════════════════════════════════
-let saveTimer;
-function saveFB(){
-  if(!firebaseOK) return;
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(()=>{
-    dbRef.set(C).then(()=>{
-      setFBStatus('ok','Kaydedildi ✓');
-    }).catch(e=>{
-      setFBStatus('err','Yazma hatası!');
-      console.error(e);
-    });
-  }, 400);
-}
+// ═══════ FIREBASE ═══════
+let saveT;
+function saveFB(){if(!fbOK)return;clearTimeout(saveT);saveT=setTimeout(()=>{dbRef.set(C).then(()=>setFB('ok','Kaydedildi ✓')).catch(e=>{setFB('err','Hata!');console.error(e)})},400)}
+function loadFB(cb){if(!fbOK){cb();return}dbRef.once('value',s=>{if(s.exists()){C=merge(getDef(),s.val());fixArrays(C)}else{C=getDef();dbRef.set(C)}setFB('ok','Bağlı ✓');cb()},e=>{setFB('err','Bağlantı hatası!');cb()})}
+function listenFB(){if(!fbOK)return;dbRef.on('value',s=>{if(!s.exists())return;C=merge(getDef(),s.val());fixArrays(C);renderAll();setFB('ok','Canlı ✓')})}
+function setFB(t,m){const d=$('fbD'),x=$('fbT'),i=$('fbInd');if(d){d.className='fbd '+t}if(x)x.textContent=m;if(i){i.className='fb-ind '+t;i.textContent=t==='ok'?'🟢 Bağlı':'🔴 Hata'}}
 
-function loadFB(callback){
-  if(!firebaseOK){callback();return;}
-  dbRef.once('value', snap=>{
-    if(snap.exists()){
-      C = merge(getDef(), snap.val());
-      // Liste players düzeltme (Firebase array'leri object yapar)
-      for(let n=1;n<=3;n++){
-        if(C.L[n] && C.L[n].p && !Array.isArray(C.L[n].p)){
-          C.L[n].p = Object.values(C.L[n].p);
-        }
-      }
-      if(C.gifts && !Array.isArray(C.gifts)){
-        C.gifts = Object.values(C.gifts);
-      }
-    } else {
-      C = getDef();
-      dbRef.set(C);
-    }
-    setFBStatus('ok','Bağlı ✓');
-    callback();
-  }, err=>{
-    setFBStatus('err','Bağlantı hatası!');
-    console.error(err);
-    callback();
-  });
-}
+// ═══════ NEON ═══════
+function mkN(c,i,b){const f=i/100;return`0 0 ${7*f}px #fff,0 0 ${10*f}px #fff,0 0 ${21*f}px #fff,0 0 ${42*f}px ${c},0 0 ${82*f}px ${c},0 0 ${b*f}px ${c}`}
+function setN(el,o){if(!el)return;el.style.textShadow=mkN(o.nc,o.ni,o.nb);el.style.color='#fff';if(o.fl){el.classList.add('nfl');el.style.setProperty('--fs',o.fs+'s')}else el.classList.remove('nfl')}
 
-function listenFB(){
-  if(!firebaseOK) return;
-  dbRef.on('value', snap=>{
-    if(!snap.exists()) return;
-    C = merge(getDef(), snap.val());
-    for(let n=1;n<=3;n++){
-      if(C.L[n]&&C.L[n].p&&!Array.isArray(C.L[n].p)) C.L[n].p=Object.values(C.L[n].p);
-    }
-    if(C.gifts&&!Array.isArray(C.gifts)) C.gifts=Object.values(C.gifts);
-    renderAll();
-    setFBStatus('ok','Canlı senkron ✓');
-  });
-}
-
-function setFBStatus(type, txt){
-  const dot=$('fbDot'),tx=$('fbTxt');
-  if(!dot||!tx)return;
-  dot.className='fb-dot '+type;
-  tx.textContent=txt;
-}
-
-// ════════════════════════════════════════
-//  NEON
-// ════════════════════════════════════════
-function mkNeon(c,i,b){const f=i/100;return`0 0 ${7*f}px #fff,0 0 ${10*f}px #fff,0 0 ${21*f}px #fff,0 0 ${42*f}px ${c},0 0 ${82*f}px ${c},0 0 ${b*f}px ${c}`}
-function setNeon(el,o){if(!el)return;el.style.textShadow=mkNeon(o.nc,o.ni,o.nb);el.style.color='#fff';if(o.fl){el.classList.add('nfl');el.style.setProperty('--fs',o.fs+'s')}else{el.classList.remove('nfl')}}
-
-// ════════════════════════════════════════
-//  RENDER
-// ════════════════════════════════════════
+// ═══════ RENDER ═══════
 function renderAll(){
-  const mt=$('elMT');if(mt){mt.textContent=C.mt.text;mt.style.fontSize=C.mt.size+'px';setNeon(mt,C.mt)}
-  const st=$('elST');if(st){st.textContent=C.st.text;st.style.fontSize=C.st.size+'px';setNeon(st,C.st)}
-  const ft=$('elFT');if(ft) ft.textContent=C.ft;
-  renderGifts();
-  for(let i=1;i<=3;i++) renderList(i);
-  applyWA();applyBg();genPrt();genStr();
+  const st=$('elST');if(st){st.textContent=C.st.text;st.style.fontSize=C.st.size+'px';setN(st,C.st)}
+  $('elFT').textContent=C.ft;
+  for(let n=1;n<=3;n++){renderGifts(n);renderList(n)}
+  applyBg();genPrt();genStr();
 }
 
-function renderGifts(){
-  const w=$('gWrap');if(!w)return;w.innerHTML='';
-  if(!C.gifts||!C.gifts.length)return;
-  C.gifts.forEach((g,i)=>{
-    const c=document.createElement('div');c.className='gc';c.setAttribute('data-a',C.ga||'float');
+function renderGifts(n){
+  const G=C.G[n];if(!G)return;
+  const sec=$('wG'+n);if(!sec)return;
+  sec.setAttribute('data-w',G.wa||'fadeIn');
+  sec.innerHTML=`<div class="g-tit"><span id="gT${n}" style="font-size:${G.ts||28}px"></span></div><div class="g-wrap" id="gW${n}"></div>`;
+  const te=$('gT'+n);te.textContent=G.title;setN(te,G);
+  const w=$('gW'+n);
+  if(!G.gifts||!G.gifts.length)return;
+  G.gifts.forEach((g,i)=>{
+    const c=document.createElement('div');c.className='gc';c.setAttribute('data-a',G.ga||'float');
     c.style.border=`2px solid ${g.cl}55`;c.style.boxShadow=`0 0 30px ${g.cl}33,inset 0 0 25px ${g.cl}15`;
     c.style.background=`linear-gradient(135deg,${g.cl}18,${g.cl}08)`;c.style.animationDelay=(i*.4)+'s';
     let v=g.tp==='image'&&g.img?`<div class="gc-v"><img src="${g.img}"></div>`:`<div class="gc-v">${g.em||'🎁'}</div>`;
     c.innerHTML=`${v}<div class="gc-n">${g.nm||''}</div><div class="gc-vl">${g.vl||''}</div>`;
-    c.onmouseenter=()=>{c.style.boxShadow=`0 0 50px ${g.cl}55,inset 0 0 35px ${g.cl}25`};
-    c.onmouseleave=()=>{c.style.boxShadow=`0 0 30px ${g.cl}33,inset 0 0 25px ${g.cl}15`};
+    c.onmouseenter=()=>c.style.boxShadow=`0 0 50px ${g.cl}55,inset 0 0 35px ${g.cl}25`;
+    c.onmouseleave=()=>c.style.boxShadow=`0 0 30px ${g.cl}33,inset 0 0 25px ${g.cl}15`;
     w.appendChild(c);
   });
 }
 
 function renderList(n){
   const L=C.L[n];if(!L)return;
-  const te=$('lt'+n);if(te){te.textContent=L.t;setNeon(te,L)}
-  const bd=$('wL'+n);if(bd){bd.style.border=`2px solid ${L.nc}55`;bd.style.boxShadow=`0 0 35px ${L.nc}18`;bd.style.background=`linear-gradient(180deg,${L.nc}12,rgba(10,10,30,.95))`}
-  const hd=$('bh'+n);if(hd) hd.style.background=`linear-gradient(135deg,${L.nc}30,${L.nc}10)`;
-  const bb=$('lb'+n);if(!bb)return;bb.innerHTML='';
-  if(!L.p||!L.p.length)return;
-  [...L.p].sort((a,b)=>(b.s||0)-(a.s||0)).forEach((p,i)=>{
-    const r=document.createElement('div');r.className='pr';r.setAttribute('data-a',C.la||'slideL');
-    r.style.background=`linear-gradient(90deg,${L.nc}12,${L.nc}02)`;r.style.borderLeft=`3px solid ${L.nc}88`;
-    r.style.animationDelay=(i*.1)+'s';
-    let rc='rd',ri=i+1;if(i===0){rc='r1';ri='👑'}else if(i===1){rc='r2';ri='🥈'}else if(i===2){rc='r3';ri='🥉'}
-    r.innerHTML=`<div class="pk ${rc}">${ri}</div><div class="pn">${p.n||''}</div><div class="ps" style="color:${L.nc};text-shadow:0 0 10px ${L.nc}55">${fmtS(p.s||0)}</div>`;
-    bb.appendChild(r);
-  });
+  const brd=$('wL'+n);if(!brd)return;
+  brd.setAttribute('data-w',L.wa||'fadeIn');
+  brd.style.border=`2px solid ${L.nc}55`;brd.style.boxShadow=`0 0 35px ${L.nc}18`;
+  brd.style.background=`linear-gradient(180deg,${L.nc}12,rgba(10,10,30,.95))`;
+  const sorted=[...(L.p||[])].sort((a,b)=>(b.s||0)-(a.s||0));
+  const top3=sorted.slice(0,3);
+  const rest=sorted.slice(3);
+
+  let html=`<div class="brd-h" style="background:linear-gradient(135deg,${L.nc}30,${L.nc}10)"><h2 id="lt${n}"></h2></div><div class="brd-b"><div class="podium">`;
+
+  // Throne (#1)
+  if(top3[0]){
+    html+=`<div class="throne-wrap"><div class="throne">
+      <div class="throne-sparkle">${Array.from({length:6},(_,i)=>`<span style="left:${Math.random()*90}%;top:${Math.random()*90}%;animation-delay:${i*.3}s"></span>`).join('')}</div>
+      <div class="t-rank">★ 1. SIRA ★</div>
+      <div class="t-name">${top3[0].n||''}</div>
+      <div class="t-score">${fmtS(top3[0].s||0)}</div>
+    </div></div>`;
+  }
+
+  // Runners (#2 & #3)
+  if(top3.length>1){
+    html+=`<div class="runners">`;
+    if(top3[1]) html+=`<div class="runner runner-2"><div class="r-badge">🥈</div><div class="r-rank">2. SIRA</div><div class="r-name">${top3[1].n||''}</div><div class="r-score">${fmtS(top3[1].s||0)}</div></div>`;
+    if(top3[2]) html+=`<div class="runner runner-3"><div class="r-badge">🥉</div><div class="r-rank">3. SIRA</div><div class="r-name">${top3[2].n||''}</div><div class="r-score">${fmtS(top3[2].s||0)}</div></div>`;
+    html+=`</div>`;
+  }
+  html+=`</div>`;
+
+  // Scroll area
+  if(rest.length>0){
+    const dir=L.sd||'up';
+    const speed=L.ss||25;
+    let rows='';
+    rest.forEach((p,i)=>{
+      rows+=`<div class="sr" style="background:linear-gradient(90deg,${L.nc}10,${L.nc}02);border-left:3px solid ${L.nc}55">
+        <div class="sr-rank">${i+4}</div>
+        <div class="sr-name">${p.n||''}</div>
+        <div class="sr-score" style="color:${L.nc};text-shadow:0 0 8px ${L.nc}44">${fmtS(p.s||0)}</div>
+      </div>`;
+    });
+    html+=`<div class="scroll-box"><div class="scroll-track ${dir}" style="--ss:${speed}s">${rows}${rows}</div></div>`;
+  }
+
+  html+=`</div>`;
+  brd.innerHTML=html;
+  const te=$('lt'+n);if(te){te.textContent=L.t;setN(te,L)}
 }
 
-function applyWA(){
-  const wa=C.wa||{};
-  const g=$('wGifts');if(g)g.setAttribute('data-w',wa.gifts||'fadeIn');
-  [1,2,3].forEach(n=>{const e=$('wL'+n);if(e)e.setAttribute('data-w',wa['list'+n]||'fadeIn')});
-}
-function applyBg(){
-  if(!C.bg)return;
-  const r=parseInt(C.bg.c.substr(1,2),16),g=parseInt(C.bg.c.substr(3,2),16),b=parseInt(C.bg.c.substr(5,2),16);
-  document.body.style.backgroundColor=`rgba(${r},${g},${b},${(C.bg.o||100)/100})`;
-}
 function fmtS(s){return s>=10000?(s/1000).toFixed(1)+'K':s.toLocaleString()}
+function applyBg(){if(!C.bg)return;const r=parseInt(C.bg.c.substr(1,2),16),g=parseInt(C.bg.c.substr(3,2),16),b=parseInt(C.bg.c.substr(5,2),16);document.body.style.backgroundColor=`rgba(${r},${g},${b},${(C.bg.o||100)/100})`}
 function genPrt(){const c=$('particles');if(!c)return;c.innerHTML='';const cls=['#ff0080','#00d4ff','#00ff88','#b200ff','#ffd700'];for(let i=0;i<(C.prt||0);i++){const d=document.createElement('div');d.className='ptc';const s=Math.random()*6+2,cl=cls[Math.floor(Math.random()*cls.length)];d.style.cssText=`width:${s}px;height:${s}px;background:${cl};box-shadow:0 0 ${s*2}px ${cl};left:${Math.random()*100}%;animation-duration:${Math.random()*10+8}s;animation-delay:${Math.random()*10}s`;c.appendChild(d)}}
 function genStr(){const c=$('stars');if(!c)return;c.innerHTML='';for(let i=0;i<(C.str||0);i++){const d=document.createElement('div');d.className='star';d.style.cssText=`top:${Math.random()*50}%;left:${Math.random()*30}%;animation-duration:${Math.random()*3+2}s;animation-delay:${Math.random()*8}s`;c.appendChild(d)}}
 
-// ════════════════════════════════════════
-//  WIDGET MODE
-// ════════════════════════════════════════
+// ═══════ WIDGET MODE ═══════
 function initWidget(){
   document.body.classList.add('wm');
   document.querySelector('.ctrl-btn').style.display='none';
-  document.querySelectorAll('#mainView > *').forEach(e=>e.style.display='none');
-  if(WM==='gifts'){$('wGifts').style.display=''}
-  else if(WM.startsWith('list')){
-    $('brdsAll').style.display='flex';
-    [1,2,3].forEach(n=>{$('wL'+n).style.display=(WM==='list'+n)?'':'none'});
-  }
-  listenFB(); // Gerçek zamanlı güncelleme
+  document.querySelectorAll('#mainV > *').forEach(e=>e.style.display='none');
+  if(WM.startsWith('gifts')){const n=WM.replace('gifts','');$('wG'+n).style.display=''}
+  else if(WM.startsWith('list')){const n=WM.replace('list','');$('brdsAll').style.display='flex';[1,2,3].forEach(i=>$('wL'+i).style.display=i==n?'':'none')}
+  listenFB();
 }
 
-// ════════════════════════════════════════
-//  PANEL
-// ════════════════════════════════════════
-function togglePnl(){$('pnl').classList.toggle('open')}
+// ═══════ PANEL ═══════
+function toggleP(){$('pnl').classList.toggle('open')}
 
 function buildPanel(){
-  const tabs=[{id:'pY',l:'📝 Yazılar'},{id:'pG',l:'🎁 Hediyeler'},{id:'pL',l:'📋 Listeler'},{id:'pA',l:'🎬 Animasyon'},{id:'pW',l:'🔗 Widget'},{id:'pT',l:'🎨 Tema'}];
+  const tabs=[
+    {id:'pY',l:'📝 Yazılar'},
+    {id:'pG1',l:'🎁 Hediye 1'},
+    {id:'pG2',l:'🎁 Hediye 2'},
+    {id:'pG3',l:'🎁 Hediye 3'},
+    {id:'pL1',l:'🏆 Liste 1'},
+    {id:'pL2',l:'⚡ Liste 2'},
+    {id:'pL3',l:'🌟 Liste 3'},
+    {id:'pW',l:'🔗 Widget'},
+    {id:'pT',l:'🎨 Tema'}
+  ];
   const bar=$('tabBar'),pns=$('tabPanes');bar.innerHTML='';pns.innerHTML='';
   tabs.forEach((t,i)=>{
     const b=document.createElement('div');b.className='tab'+(i===0?' on':'');b.textContent=t.l;
@@ -404,78 +430,81 @@ function buildPanel(){
     bar.appendChild(b);
     const p=document.createElement('div');p.id=t.id;p.className='tp'+(i===0?' on':'');pns.appendChild(p);
   });
-  bldY();bldG();bldL();bldA();bldW();bldT();
+  bldY();for(let n=1;n<=3;n++){bldGift(n);bldList(n)}bldW();bldT();
 }
 
 // --- YAZILAR ---
 function bldY(){
   $('pY').innerHTML=`
-  <h3>📝 Ana Başlık</h3>
-  <label>Metin</label><input type="text" id="iMT" value="${esc(C.mt.text)}">
-  <label>Boyut (${C.mt.size}px)</label><input type="range" id="iMS" min="14" max="80" value="${C.mt.size}" oninput="this.previousElementSibling.textContent='Boyut ('+this.value+'px)'">
-  <h3>✨ Neon Ayarı</h3>
-  <div class="inl"><div><label>Renk</label><input type="color" id="iMC" value="${C.mt.nc}"></div>
-  <div><label>Yoğunluk (${C.mt.ni}%)</label><input type="range" id="iMI" min="0" max="200" value="${C.mt.ni}" oninput="this.previousElementSibling.textContent='Yoğunluk ('+this.value+'%)'"></div></div>
-  <div class="inl"><div><label>Blur (${C.mt.nb}px)</label><input type="range" id="iMB" min="0" max="300" value="${C.mt.nb}" oninput="this.previousElementSibling.textContent='Blur ('+this.value+'px)'"></div>
-  <div><label>Titreşim Hızı (${C.mt.fs}s)</label><input type="range" id="iMFS" min="5" max="80" value="${C.mt.fs*10}" oninput="this.previousElementSibling.textContent='Titreşim Hızı ('+(this.value/10)+'s)'"></div></div>
-  <label><input type="checkbox" id="iMFL" ${C.mt.fl?'checked':''}> Neon Titreşim</label>
-  <hr class="sp">
-  <h3>📝 Alt Başlık</h3>
+  <div class="scard"><h3>📝 Alt Başlık / Duyuru</h3>
   <label>Metin</label><input type="text" id="iST" value="${esc(C.st.text)}">
   <label>Boyut (${C.st.size}px)</label><input type="range" id="iSS" min="10" max="60" value="${C.st.size}" oninput="this.previousElementSibling.textContent='Boyut ('+this.value+'px)'">
-  <h3>✨ Neon</h3>
-  <div class="inl"><div><label>Renk</label><input type="color" id="iSC" value="${C.st.nc}"></div>
-  <div><label>Yoğunluk</label><input type="range" id="iSI" min="0" max="200" value="${C.st.ni}"></div></div>
-  <div class="inl"><div><label>Blur</label><input type="range" id="iSB" min="0" max="300" value="${C.st.nb}"></div>
-  <div><label>Titreşim Hızı</label><input type="range" id="iSFS" min="5" max="80" value="${C.st.fs*10}"></div></div>
-  <label><input type="checkbox" id="iSFL" ${C.st.fl?'checked':''}> Neon Titreşim</label>
-  <hr class="sp">
-  <h3>📝 Alt Bilgi</h3><input type="text" id="iFT" value="${esc(C.ft)}">
-  <hr class="sp">
-  <button class="bt bt-pk" onclick="saveY()">✅ Uygula & Kaydet</button>
-  <span style="color:#888;font-size:9px;margin-left:8px">Widget'lar anında güncellenir!</span>`;
+  <div class="inl"><div><label>🎨 Neon Renk</label><input type="color" id="iSC" value="${C.st.nc}"></div>
+  <div><label>💡 Yoğunluk</label><input type="range" id="iSI" min="0" max="200" value="${C.st.ni}"></div></div>
+  <div class="inl"><div><label>🌫 Blur</label><input type="range" id="iSB" min="0" max="300" value="${C.st.nb}"></div>
+  <div><label>⚡ Titreşim Hızı</label><input type="range" id="iSFS" min="5" max="80" value="${C.st.fs*10}"></div></div>
+  <label><input type="checkbox" id="iSFL" ${C.st.fl?'checked':''}> Neon Titreşim Aktif</label></div>
+  <div class="scard"><h3>📝 Alt Bilgi</h3><input type="text" id="iFT" value="${esc(C.ft)}"></div>
+  <button class="bt bt-pk" onclick="saveY()">✅ Kaydet & Senkronize Et</button>`;
 }
 function saveY(){
-  C.mt.text=$('iMT').value;C.mt.size=+$('iMS').value;C.mt.nc=$('iMC').value;
-  C.mt.ni=+$('iMI').value;C.mt.nb=+$('iMB').value;C.mt.fl=$('iMFL').checked;C.mt.fs=+$('iMFS').value/10;
   C.st.text=$('iST').value;C.st.size=+$('iSS').value;C.st.nc=$('iSC').value;
   C.st.ni=+$('iSI').value;C.st.nb=+$('iSB').value;C.st.fl=$('iSFL').checked;C.st.fs=+$('iSFS').value/10;
-  C.ft=$('iFT').value;
-  renderAll();saveFB();notify('✅ Kaydedildi! Widget\'lar güncelleniyor...');
+  C.ft=$('iFT').value;renderAll();saveFB();notify('✅ Kaydedildi!')
 }
 
-// --- HEDİYELER ---
-let upIdx=-1;
-function bldG(){
-  $('pG').innerHTML='<h3>🎁 Hediye Kartları</h3><p style="color:#888;font-size:10px;margin-bottom:10px">Ekle, sil, sırala, emoji veya görsel yükle</p><div id="geW"></div><div style="margin-top:12px"><button class="bt bt-gn" onclick="addG()">➕ Hediye Ekle</button></div>';
-  bldGE();
+// --- HEDİYE GALERİSİ ---
+let upIdx=-1,upGal=1;
+function bldGift(n){
+  const G=C.G[n];
+  const gaO=[['float','🫧 Süzülme'],['pulse','💓 Nabız'],['bounce','⬆ Zıplama'],['swing','🎪 Sallanma'],['jello','🍮 Jöle'],['flip','🔃 Flip'],['spin','🔄 3D Dönüş'],['glitch','⚡ Glitch']];
+  const waO=[['fadeIn','🌫 Fade'],['slideDown','⬇ Yukarıdan'],['slideUp','⬆ Aşağıdan'],['zoomIn','🔍 Zoom'],['bounceIn','🏀 Bounce'],['flipIn','🔃 Flip']];
+  const ms=(opts,val)=>opts.map(o=>`<option value="${o[0]}" ${val===o[0]?'selected':''}>${o[1]}</option>`).join('');
+
+  let h=`<div class="scard"><h3>📌 Galeri ${n} Başlık & Neon</h3>
+  <label>Başlık</label><input type="text" value="${esc(G.title)}" oninput="C.G[${n}].title=this.value;renderGifts(${n});saveFB()">
+  <label>Boyut</label><input type="range" min="14" max="60" value="${G.ts||28}" oninput="C.G[${n}].ts=+this.value;renderGifts(${n})">
+  <div class="inl"><div><label>🎨 Renk</label><input type="color" value="${G.nc}" onchange="C.G[${n}].nc=this.value;renderGifts(${n});saveFB()"></div>
+  <div><label>💡 Yoğunluk</label><input type="range" min="0" max="200" value="${G.ni}" oninput="C.G[${n}].ni=+this.value;renderGifts(${n})"></div></div>
+  <div class="inl"><div><label>🌫 Blur</label><input type="range" min="0" max="300" value="${G.nb}" oninput="C.G[${n}].nb=+this.value;renderGifts(${n})"></div>
+  <div><label>⚡ Titreşim</label><input type="range" min="5" max="80" value="${G.fs*10}" oninput="C.G[${n}].fs=this.value/10;renderGifts(${n})"></div></div>
+  <label><input type="checkbox" ${G.fl?'checked':''} onchange="C.G[${n}].fl=this.checked;renderGifts(${n});saveFB()"> Titreşim</label></div>
+
+  <div class="scard"><h3>🎬 Animasyon</h3>
+  <div class="inl"><div><label>Kart Animasyonu</label><select onchange="C.G[${n}].ga=this.value;renderGifts(${n});saveFB()">${ms(gaO,G.ga)}</select></div>
+  <div><label>Widget Giriş</label><select onchange="C.G[${n}].wa=this.value;saveFB()">${ms(waO,G.wa)}</select></div></div></div>
+
+  <div class="scard"><h3>🎁 Hediye Kartları</h3><div id="ge${n}"></div>
+  <button class="bt bt-gn bt-sm" onclick="addGift(${n})">➕ Hediye Ekle</button></div>`;
+
+  $('pG'+n).innerHTML=h;
+  bldGE(n);
 }
-function bldGE(){
-  const w=$('geW');if(!w)return;w.innerHTML='';
-  C.gifts.forEach((g,i)=>{
-    let pv=g.tp==='image'&&g.img?`<img src="${g.img}" class="pimg">`:`<span style="font-size:28px">${g.em||'🎁'}</span>`;
-    w.innerHTML+=`<div class="gbx" draggable="true" ondragstart="dgS(event,${i})" ondragover="event.preventDefault()" ondrop="dgD(event,${i})">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div class="gtt">Hediye ${i+1}</div>
-        <div>${i>0?`<button class="bt bt-bl bt-sm" onclick="mvG(${i},-1)">⬆</button>`:''} ${i<C.gifts.length-1?`<button class="bt bt-bl bt-sm" onclick="mvG(${i},1)">⬇</button>`:''} <button class="bt bt-rd bt-sm" onclick="rmG(${i})">🗑</button></div>
-      </div>
-      <div style="display:flex;gap:10px;align-items:center;margin:8px 0"><div>${pv}</div>
-      <div style="flex:1"><label>Tip</label><select onchange="C.gifts[${i}].tp=this.value;bldGE();renderGifts();saveFB()">
+
+function bldGE(n){
+  const w=$('ge'+n);if(!w)return;w.innerHTML='';
+  const G=C.G[n];if(!G||!G.gifts)return;
+  G.gifts.forEach((g,i)=>{
+    let pv=g.tp==='image'&&g.img?`<img src="${g.img}" class="pimg">`:`<span style="font-size:26px">${g.em||'🎁'}</span>`;
+    w.innerHTML+=`<div class="gbx">
+      <div class="gtt"><span>Hediye ${i+1}</span>
+        <div>${i>0?`<button class="bt bt-bl bt-sm" onclick="mvGift(${n},${i},-1)">⬆</button>`:''} ${i<G.gifts.length-1?`<button class="bt bt-bl bt-sm" onclick="mvGift(${n},${i},1)">⬇</button>`:''} <button class="bt bt-rd bt-sm" onclick="rmGift(${n},${i})">🗑</button></div></div>
+      <div style="display:flex;gap:10px;align-items:center;margin:6px 0"><div>${pv}</div>
+      <div style="flex:1"><label>Tip</label><select onchange="C.G[${n}].gifts[${i}].tp=this.value;bldGE(${n});renderGifts(${n});saveFB()">
         <option value="emoji" ${g.tp==='emoji'?'selected':''}>😀 Emoji</option>
         <option value="image" ${g.tp==='image'?'selected':''}>🖼 Görsel</option></select></div></div>
-      ${g.tp==='emoji'?`<label>Emoji</label><input type="text" value="${g.em||''}" style="font-size:20px" oninput="C.gifts[${i}].em=this.value;renderGifts();saveFB()">`
-        :`<button class="bt bt-gd bt-sm" onclick="upIdx=${i};$('imgUp').click()">📁 Görsel Yükle</button>`}
-      <div class="inl"><div><label>İsim</label><input type="text" value="${esc(g.nm||'')}" oninput="C.gifts[${i}].nm=this.value;renderGifts();saveFB()"></div>
-        <div><label>Değer</label><input type="text" value="${esc(g.vl||'')}" oninput="C.gifts[${i}].vl=this.value;renderGifts();saveFB()"></div></div>
-      <label>Kart Rengi</label><input type="color" value="${g.cl||'#ff0080'}" onchange="C.gifts[${i}].cl=this.value;renderGifts();saveFB()">
+      ${g.tp==='emoji'?`<label>Emoji</label><input type="text" value="${g.em||''}" style="font-size:20px" oninput="C.G[${n}].gifts[${i}].em=this.value;renderGifts(${n});saveFB()">`
+        :`<button class="bt bt-gd bt-sm" onclick="upGal=${n};upIdx=${i};$('imgUp').click()">📁 Görsel Yükle</button>`}
+      <div class="inl"><div><label>İsim</label><input type="text" value="${esc(g.nm)}" oninput="C.G[${n}].gifts[${i}].nm=this.value;renderGifts(${n});saveFB()"></div>
+      <div><label>Değer</label><input type="text" value="${esc(g.vl)}" oninput="C.G[${n}].gifts[${i}].vl=this.value;renderGifts(${n});saveFB()"></div></div>
+      <label>Kart Rengi</label><input type="color" value="${g.cl||'#ff0080'}" onchange="C.G[${n}].gifts[${i}].cl=this.value;renderGifts(${n});saveFB()">
     </div>`;
   });
 }
-function addG(){C.gifts.push({tp:'emoji',em:'🎀',nm:'YENİ',vl:'0 Coin',cl:'#ff69b4',img:''});bldGE();renderGifts();saveFB()}
-function rmG(i){if(C.gifts.length<=1){notify('⚠️ En az 1 hediye!');return}C.gifts.splice(i,1);bldGE();renderGifts();saveFB()}
-function mvG(i,d){const j=i+d;if(j<0||j>=C.gifts.length)return;[C.gifts[i],C.gifts[j]]=[C.gifts[j],C.gifts[i]];bldGE();renderGifts();saveFB()}
-function dgS(e,i){e.dataTransfer.setData('text',i)}
-function dgD(e,j){e.preventDefault();const i=+e.dataTransfer.getData('text');if(i===j)return;const it=C.gifts.splice(i,1)[0];C.gifts.splice(j,0,it);bldGE();renderGifts();saveFB()}
+function addGift(n){C.G[n].gifts.push({tp:'emoji',em:'🎀',nm:'YENİ',vl:'0 Coin',cl:'#ff69b4',img:''});bldGE(n);renderGifts(n);saveFB()}
+function rmGift(n,i){if(C.G[n].gifts.length<=1){notify('⚠️ En az 1 hediye!');return}C.G[n].gifts.splice(i,1);bldGE(n);renderGifts(n);saveFB()}
+function mvGift(n,i,d){const j=i+d;if(j<0||j>=C.G[n].gifts.length)return;[C.G[n].gifts[i],C.G[n].gifts[j]]=[C.G[n].gifts[j],C.G[n].gifts[i]];bldGE(n);renderGifts(n);saveFB()}
+
 document.addEventListener('DOMContentLoaded',()=>{
   $('imgUp').addEventListener('change',function(e){
     const f=e.target.files[0];if(!f||upIdx<0)return;
@@ -484,160 +513,121 @@ document.addEventListener('DOMContentLoaded',()=>{
         const cv=document.createElement('canvas');let w=img.width,h=img.height;
         if(w>100||h>100){if(w>h){h=h*100/w;w=100}else{w=w*100/h;h=100}}
         cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
-        C.gifts[upIdx].tp='image';C.gifts[upIdx].img=cv.toDataURL('image/webp',.7);
-        renderGifts();bldGE();saveFB()};
+        C.G[upGal].gifts[upIdx].tp='image';C.G[upGal].gifts[upIdx].img=cv.toDataURL('image/webp',.7);
+        renderGifts(upGal);bldGE(upGal);saveFB()};
       img.src=ev.target.result};r.readAsDataURL(f);this.value=''})});
 
 // --- LİSTELER ---
-function bldL(){
-  let h='';const ic=['','🏆','⚡','🌟'];
-  for(let n=1;n<=3;n++){const L=C.L[n];
-    h+=`<div class="acc" id="ac${n}"><div class="acc-h" onclick="$('ac${n}').classList.toggle('op')">${ic[n]} Liste ${n} <span class="ar">▼</span></div>
-    <div class="acc-b">
-      <label>Başlık</label><input type="text" value="${esc(L.t)}" oninput="C.L[${n}].t=this.value;renderList(${n});saveFB()">
-      <h3>✨ Neon</h3>
-      <div class="inl"><div><label>Renk</label><input type="color" value="${L.nc}" onchange="C.L[${n}].nc=this.value;renderList(${n});saveFB()"></div>
-        <div><label>Yoğunluk</label><input type="range" min="0" max="200" value="${L.ni}" oninput="C.L[${n}].ni=+this.value;renderList(${n})"></div></div>
-      <div class="inl"><div><label>Blur</label><input type="range" min="0" max="300" value="${L.nb}" oninput="C.L[${n}].nb=+this.value;renderList(${n})"></div>
-        <div><label>Titreşim Hızı</label><input type="range" min="5" max="80" value="${L.fs*10}" oninput="C.L[${n}].fs=this.value/10;renderList(${n})"></div></div>
-      <label><input type="checkbox" ${L.fl?'checked':''} onchange="C.L[${n}].fl=this.checked;renderList(${n});saveFB()"> Neon Titreşim</label>
-      <h3>👥 Oyuncular</h3><div id="pe${n}"></div>
-      <div style="margin-top:8px">
-        <button class="bt bt-gn bt-sm" onclick="addP(${n})">➕ Ekle</button>
-        <button class="bt bt-pk bt-sm" onclick="saveFB();notify('💾 Kaydedildi & Senkronize!')">💾 Kaydet & Senkronize Et</button>
-      </div>
-    </div></div>`;
-  }
-  $('pL').innerHTML=h;
-  for(let n=1;n<=3;n++) bldPE(n);
+function bldList(n){
+  const L=C.L[n];
+  const waO=[['fadeIn','🌫 Fade'],['slideDown','⬇ Yukarıdan'],['slideUp','⬆ Aşağıdan'],['zoomIn','🔍 Zoom'],['bounceIn','🏀 Bounce'],['flipIn','🔃 Flip']];
+  const ms=(opts,val)=>opts.map(o=>`<option value="${o[0]}" ${val===o[0]?'selected':''}>${o[1]}</option>`).join('');
+
+  $('pL'+n).innerHTML=`
+  <div class="scard"><h3>📌 Liste ${n} Başlık & Neon</h3>
+  <label>Başlık</label><input type="text" value="${esc(L.t)}" oninput="C.L[${n}].t=this.value;renderList(${n});saveFB()">
+  <div class="inl"><div><label>🎨 Renk</label><input type="color" value="${L.nc}" onchange="C.L[${n}].nc=this.value;renderList(${n});saveFB()"></div>
+  <div><label>💡 Yoğunluk</label><input type="range" min="0" max="200" value="${L.ni}" oninput="C.L[${n}].ni=+this.value;renderList(${n})"></div></div>
+  <div class="inl"><div><label>🌫 Blur</label><input type="range" min="0" max="300" value="${L.nb}" oninput="C.L[${n}].nb=+this.value;renderList(${n})"></div>
+  <div><label>⚡ Titreşim</label><input type="range" min="5" max="80" value="${L.fs*10}" oninput="C.L[${n}].fs=this.value/10;renderList(${n})"></div></div>
+  <label><input type="checkbox" ${L.fl?'checked':''} onchange="C.L[${n}].fl=this.checked;renderList(${n});saveFB()"> Titreşim</label></div>
+
+  <div class="scard"><h3>🎬 Animasyon & Kaydırma</h3>
+  <div class="inl">
+  <div><label>Widget Giriş</label><select onchange="C.L[${n}].wa=this.value;saveFB()">${ms(waO,L.wa)}</select></div>
+  <div><label>Kaydırma Yönü</label><select onchange="C.L[${n}].sd=this.value;renderList(${n});saveFB()">
+    <option value="up" ${L.sd==='up'?'selected':''}>⬆ Yukarı Doğru</option>
+    <option value="down" ${L.sd==='down'?'selected':''}>⬇ Aşağı Doğru</option></select></div></div>
+  <label>Kaydırma Hızı (${L.ss||25}s - düşük = hızlı)</label>
+  <input type="range" min="5" max="60" value="${L.ss||25}" oninput="C.L[${n}].ss=+this.value;this.previousElementSibling.textContent='Kaydırma Hızı ('+this.value+'s - düşük = hızlı)';renderList(${n});saveFB()"></div>
+
+  <div class="scard"><h3>👥 Oyuncular</h3>
+  <p style="color:rgba(255,255,255,.3);font-size:9px;margin-bottom:10px;font-family:'Orbitron',sans-serif">İlk 3 oyuncu podyumda sabit görünür. Geri kalanı kayar.</p>
+  <div id="pe${n}"></div>
+  <div style="margin-top:10px">
+    <button class="bt bt-gn bt-sm" onclick="addP(${n})">➕ Oyuncu Ekle</button>
+    <button class="bt bt-pk bt-sm" onclick="saveFB();notify('💾 Senkronize edildi!')">💾 Kaydet</button>
+  </div></div>`;
+  bldPE(n);
 }
+
 function bldPE(n){
   const w=$('pe'+n);if(!w)return;w.innerHTML='';
-  if(!C.L[n].p) C.L[n].p=[];
+  if(!C.L[n].p)C.L[n].p=[];
   C.L[n].p.forEach((p,i)=>{
-    w.innerHTML+=`<div class="rw"><input type="text" value="${esc(p.n||'')}" oninput="C.L[${n}].p[${i}].n=this.value;renderList(${n})">
-      <input type="number" value="${p.s||0}" style="width:75px" oninput="C.L[${n}].p[${i}].s=+this.value||0;renderList(${n})">
-      <button class="xb" onclick="C.L[${n}].p.splice(${i},1);bldPE(${n});renderList(${n});saveFB()">×</button></div>`;
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    w.innerHTML+=`<div class="rw"><span style="width:20px;text-align:center;font-size:12px">${medal||i+1+'.'}</span>
+    <input type="text" value="${esc(p.n||'')}" oninput="C.L[${n}].p[${i}].n=this.value;renderList(${n})">
+    <input type="number" value="${p.s||0}" style="width:80px" oninput="C.L[${n}].p[${i}].s=+this.value||0;renderList(${n})">
+    <button class="xb" onclick="C.L[${n}].p.splice(${i},1);bldPE(${n});renderList(${n});saveFB()">×</button></div>`;
   });
 }
 function addP(n){C.L[n].p.push({n:'YeniOyuncu',s:0});bldPE(n);renderList(n);saveFB()}
 
-// --- ANİMASYON ---
-function bldA(){
-  const gaO=[['float','🫧 Süzülme'],['pulse','💓 Nabız'],['bounce','⬆️ Zıplama'],['swing','🎪 Sallanma'],['jello','🍮 Jöle'],['flip','🔃 Flip'],['spin','🔄 3D Dönüş'],['glitch','⚡ Glitch']];
-  const laO=[['slideL','⬅️ Soldan'],['slideR','➡️ Sağdan'],['fadeUp','⬆️ Alttan'],['pop','💥 Pop'],['flipIn','🔃 Flip'],['bounceIn','🏀 Bounce']];
-  const waO=[['fadeIn','🌫 Fade'],['slideDown','⬇️ Yukarıdan'],['slideUp','⬆️ Aşağıdan'],['zoomIn','🔍 Zoom'],['rotateIn','🔄 Dönerek'],['bounceIn','🏀 Bounce'],['flipIn','🔃 Flip']];
-  const ms=(opts,val)=>opts.map(o=>`<option value="${o[0]}" ${val===o[0]?'selected':''}>${o[1]}</option>`).join('');
-  $('pA').innerHTML=`
-    <h3>🎁 Hediye Animasyonu</h3>
-    <select onchange="C.ga=this.value;renderGifts();saveFB()">${ms(gaO,C.ga)}</select>
-    <h3>📋 Liste Satır Animasyonu</h3>
-    <select onchange="C.la=this.value;renderAll();saveFB()">${ms(laO,C.la)}</select>
-    <h3>🔗 Widget Giriş Animasyonu</h3>
-    <label>🎁 Hediye</label><select onchange="C.wa.gifts=this.value;applyWA();saveFB()">${ms(waO,C.wa.gifts)}</select>
-    <label>🏆 Liste 1</label><select onchange="C.wa.list1=this.value;applyWA();saveFB()">${ms(waO,C.wa.list1)}</select>
-    <label>⚡ Liste 2</label><select onchange="C.wa.list2=this.value;applyWA();saveFB()">${ms(waO,C.wa.list2)}</select>
-    <label>🌟 Liste 3</label><select onchange="C.wa.list3=this.value;applyWA();saveFB()">${ms(waO,C.wa.list3)}</select>
-    <hr class="sp">
-    <button class="bt bt-pk" onclick="replayA()">🎬 Animasyonları Tekrar Oynat</button>`;
-}
-function replayA(){document.querySelectorAll('.we,.pr,.gc').forEach(e=>{e.style.animation='none';e.offsetHeight;e.style.animation=''});notify('🎬 Tekrar oynatıldı!')}
-
 // --- WIDGET ---
 function bldW(){
-  const base = location.origin + location.pathname;
-  $('pW').innerHTML=`
-    <h3>🔗 OBS Widget Linkleri</h3>
-    <div style="background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);border-radius:10px;padding:12px;margin-bottom:15px">
-      <p style="color:#00ff88;font-size:11px;font-family:'Orbitron',sans-serif;line-height:1.8">
-        🔥 <b>Firebase ile artık anlık senkron!</b><br>
-        Panelde değişiklik yapın → Widget'lar <b>anında</b> güncellenir!<br>
-        Sunucu gerekmez, bilgisayar kapalı olsa bile çalışır.
-      </p>
-    </div>
+  const base=location.origin+location.pathname;
+  const widgets=[
+    {k:'gifts1',l:'🎁 Hediye Galerisi 1'},
+    {k:'gifts2',l:'🎁 Hediye Galerisi 2'},
+    {k:'gifts3',l:'🎁 Hediye Galerisi 3'},
+    {k:'list1',l:'🏆 Liste 1 (Podyum)'},
+    {k:'list2',l:'⚡ Liste 2 (Podyum)'},
+    {k:'list3',l:'🌟 Liste 3 (Podyum)'}
+  ];
+  let h=`<div class="scard"><h3>🔥 Anlık Senkron Aktif</h3>
+  <p style="color:#00ff88;font-size:10px;font-family:'Orbitron',sans-serif;line-height:1.8">Panelde değişiklik yapın → Widget'lar <b>anında</b> güncellenir!<br>Artık 6 ayrı widget linkiniz var.</p></div>`;
 
-    <label>🎁 Hediye Galerisi</label>
-    <div class="wurl" id="wu1">${base}?widget=gifts</div>
-    <button class="bt bt-bl bt-sm" onclick="cpU('wu1')">📋 Kopyala</button>
+  widgets.forEach(w=>{
+    const url=base+'?widget='+w.k;
+    h+=`<div class="scard"><h3>${w.l}</h3>
+    <div class="wurl" id="wu_${w.k}">${url}</div>
+    <button class="bt bt-bl bt-sm" onclick="cpU('wu_${w.k}')">📋 Kopyala</button>
+    <button class="bt bt-gd bt-sm" onclick="window.open('${url}','_blank','width=500,height=400')">🔍 Test</button></div>`;
+  });
 
-    <label>🏆 Liste 1</label>
-    <div class="wurl" id="wu2">${base}?widget=list1</div>
-    <button class="bt bt-bl bt-sm" onclick="cpU('wu2')">📋 Kopyala</button>
+  h+=`<div class="scard"><h3>📖 OBS Kurulum</h3>
+  <div style="color:rgba(255,255,255,.5);font-size:10px;line-height:2;font-family:'Orbitron',sans-serif">
+  <p>1. OBS → Kaynaklar → (+) → Tarayıcı</p>
+  <p>2. URL kısmına widget linkini yapıştır</p>
+  <p>3. Genişlik/Yükseklik ayarla</p>
+  <p>4. "Sahne aktif olduğunda yenile" işaretle ✅</p></div></div>`;
 
-    <label>⚡ Liste 2</label>
-    <div class="wurl" id="wu3">${base}?widget=list2</div>
-    <button class="bt bt-bl bt-sm" onclick="cpU('wu3')">📋 Kopyala</button>
-
-    <label>🌟 Liste 3</label>
-    <div class="wurl" id="wu4">${base}?widget=list3</div>
-    <button class="bt bt-bl bt-sm" onclick="cpU('wu4')">📋 Kopyala</button>
-
-    <hr class="sp">
-    <h3>📖 OBS Kurulum</h3>
-    <div style="color:#aaa;font-size:10px;line-height:2;font-family:'Orbitron',sans-serif">
-      <p>1. OBS → Kaynaklar → (+) → <b>Tarayıcı</b></p>
-      <p>2. URL kısmına widget linkini yapıştır</p>
-      <p>3. Genişlik: 800 / Yükseklik: 300 (hediye)</p>
-      <p>4. Genişlik: 400 / Yükseklik: 400 (listeler)</p>
-      <p>5. <b>"Sahne aktif olduğunda tarayıcıyı yenile"</b> işaretle ✅</p>
-    </div>
-
-    <hr class="sp">
-    <h3>⚡ Hızlı Test</h3>
-    <button class="bt bt-gd bt-sm" onclick="window.open(base+'?widget=gifts','_blank','width=800,height=300')">🎁 Hediye</button>
-    <button class="bt bt-gd bt-sm" onclick="window.open(base+'?widget=list1','_blank','width=400,height=400')">🏆 L1</button>
-    <button class="bt bt-gd bt-sm" onclick="window.open(base+'?widget=list2','_blank','width=400,height=400')">⚡ L2</button>
-    <button class="bt bt-gd bt-sm" onclick="window.open(base+'?widget=list3','_blank','width=400,height=400')">🌟 L3</button>`;
+  $('pW').innerHTML=h;
 }
 function cpU(id){const t=$(id).textContent;navigator.clipboard.writeText(t).then(()=>notify('📋 Kopyalandı!')).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();notify('📋 Kopyalandı!')})}
 
 // --- TEMA ---
 function bldT(){
   $('pT').innerHTML=`
-    <h3>🎨 Arka Plan</h3>
-    <div class="inl"><div><label>Renk</label><input type="color" value="${C.bg.c}" onchange="C.bg.c=this.value;applyBg();saveFB()"></div>
-    <div><label>Saydamlık (${C.bg.o}%)</label><input type="range" min="0" max="100" value="${C.bg.o}" oninput="C.bg.o=+this.value;applyBg();saveFB();this.previousElementSibling.textContent='Saydamlık ('+this.value+'%)'"></div></div>
-    <h3>🌟 Parçacıklar (${C.prt})</h3>
-    <input type="range" min="0" max="80" value="${C.prt}" oninput="C.prt=+this.value;genPrt();saveFB();this.previousElementSibling.textContent='🌟 Parçacıklar ('+this.value+')'">
-    <h3>⭐ Kayan Yıldızlar (${C.str})</h3>
-    <input type="range" min="0" max="20" value="${C.str}" oninput="C.str=+this.value;genStr();saveFB();this.previousElementSibling.textContent='⭐ Kayan Yıldızlar ('+this.value+')'">
-    <hr class="sp">
-    <h3>🔥 Firebase Durumu</h3>
-    <div style="background:rgba(255,255,255,.03);padding:12px;border-radius:10px;margin-bottom:10px">
-      <p style="color:${firebaseOK?'#00ff88':'#ff4444'};font-size:11px;font-family:'Orbitron',sans-serif">
-        ${firebaseOK?'✅ Firebase bağlı! Anlık senkron aktif.':'❌ Firebase bağlı değil. Config\'i kontrol edin.'}
-      </p>
-    </div>
-    <hr class="sp">
-    <h3>💾 Yedekleme</h3>
-    <button class="bt bt-gn" onclick="expCfg()">📤 JSON Dışa Aktar</button>
-    <button class="bt bt-bl" onclick="$('impF').click()">📥 JSON İçe Aktar</button>
-    <button class="bt bt-rd" onclick="rstCfg()">🗑 Sıfırla</button>
-    <input type="file" id="impF" accept=".json" style="display:none" onchange="impCfg(this)">`;
+  <div class="scard"><h3>🎨 Arka Plan</h3>
+  <div class="inl"><div><label>Renk</label><input type="color" value="${C.bg.c}" onchange="C.bg.c=this.value;applyBg();saveFB()"></div>
+  <div><label>Saydamlık (${C.bg.o}%)</label><input type="range" min="0" max="100" value="${C.bg.o}" oninput="C.bg.o=+this.value;applyBg();saveFB();this.previousElementSibling.textContent='Saydamlık ('+this.value+'%)'"></div></div></div>
+  <div class="scard"><h3>🌟 Parçacıklar (${C.prt})</h3>
+  <input type="range" min="0" max="80" value="${C.prt}" oninput="C.prt=+this.value;genPrt();saveFB();this.previousElementSibling.textContent='🌟 Parçacıklar ('+this.value+')'"></div>
+  <div class="scard"><h3>⭐ Kayan Yıldızlar (${C.str})</h3>
+  <input type="range" min="0" max="20" value="${C.str}" oninput="C.str=+this.value;genStr();saveFB();this.previousElementSibling.textContent='⭐ Kayan Yıldızlar ('+this.value+')'"></div>
+  <div class="scard"><h3>💾 Yedekleme</h3>
+  <button class="bt bt-gn" onclick="expCfg()">📤 JSON Dışa Aktar</button>
+  <button class="bt bt-bl" onclick="$('impF').click()">📥 JSON İçe Aktar</button>
+  <button class="bt bt-rd" onclick="rstCfg()">🗑 Sıfırla</button>
+  <input type="file" id="impF" accept=".json" style="display:none" onchange="impCfg(this)"></div>`;
 }
 function expCfg(){const b=new Blob([JSON.stringify(C,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='overlay-config.json';a.click();notify('📤 İndirildi!')}
 function impCfg(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{C=JSON.parse(e.target.result);saveFB();buildPanel();renderAll();notify('📥 Yüklendi!')}catch(x){notify('❌ Hata!')}};r.readAsText(f);inp.value=''}
 function rstCfg(){if(!confirm('Sıfırlansın mı?'))return;C=getDef();saveFB();buildPanel();renderAll();notify('🗑 Sıfırlandı!')}
 
-// ════════════════════════════════════════
-//  HELPERS
-// ════════════════════════════════════════
+// ═══════ HELPERS ═══════
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s||'').replace(/"/g,'&quot;')}
-function notify(m){const d=document.createElement('div');d.style.cssText='position:fixed;top:55px;right:20px;background:linear-gradient(135deg,#ff0080,#7928ca);color:#fff;padding:14px 22px;border-radius:14px;font-family:"Luckiest Guy",cursive;font-size:13px;z-index:99999;box-shadow:0 0 25px rgba(255,0,128,.5);pointer-events:none';d.textContent=m;document.body.appendChild(d);setTimeout(()=>{d.style.opacity='0';d.style.transform='translateX(80px)';d.style.transition='all .4s';setTimeout(()=>d.remove(),400)},2500)}
+function notify(m){const d=document.createElement('div');d.style.cssText='position:fixed;top:55px;right:20px;background:linear-gradient(135deg,#ff0080,#7928ca);color:#fff;padding:14px 24px;border-radius:14px;font-family:"Luckiest Guy",cursive;font-size:13px;z-index:99999;box-shadow:0 0 30px rgba(255,0,128,.4);pointer-events:none;backdrop-filter:blur(10px)';d.textContent=m;document.body.appendChild(d);setTimeout(()=>{d.style.opacity='0';d.style.transform='translateX(80px)';d.style.transition='all .4s';setTimeout(()=>d.remove(),400)},2500)}
 
-// ════════════════════════════════════════
-//  BAŞLAT
-// ════════════════════════════════════════
+// ═══════ BAŞLAT ═══════
 window.addEventListener('DOMContentLoaded',()=>{
-  setFBStatus('wait','Bağlanıyor...');
+  setFB('wait','Bağlanıyor...');
   loadFB(()=>{
-    if(WM){
-      initWidget();
-    } else {
-      buildPanel();
-      renderAll();
-    }
+    if(WM){initWidget();renderAll()}
+    else{buildPanel();renderAll()}
   });
 });
 </script>
