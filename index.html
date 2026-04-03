@@ -9,12 +9,10 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--accent:#ff0080;--accent2:#7928ca}
 body{background:#0a0a0a;font-family:'Luckiest Guy',cursive;min-height:100vh;overflow-x:hidden}
 body.wm{background:transparent!important}
 body.wm .ctrl-btn,body.wm .particles,body.wm .stars,body.wm #mainV .glow-line,body.wm #mainV .sub-area,body.wm #mainV .foot-area,body.wm .fbs{display:none}
 
-/* Firebase Status */
 .fbs{position:fixed;bottom:10px;left:10px;z-index:9998;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);padding:8px 16px;border-radius:20px;font-family:'Orbitron',sans-serif;font-size:9px;color:#888;border:1px solid rgba(255,255,255,.05)}
 .fbd{width:8px;height:8px;border-radius:50%}
 .fbd.ok{background:#00ff88;box-shadow:0 0 10px #00ff88}
@@ -22,15 +20,14 @@ body.wm .ctrl-btn,body.wm .particles,body.wm .stars,body.wm #mainV .glow-line,bo
 .fbd.wait{background:#ffd700;box-shadow:0 0 10px #ffd700;animation:blnk 1s linear infinite}
 @keyframes blnk{50%{opacity:.3}}
 
-/* Control Button */
-.ctrl-btn{position:fixed;top:12px;right:12px;z-index:10000;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;padding:14px 26px;border-radius:30px;cursor:pointer;font-family:'Luckiest Guy',cursive;font-size:14px;box-shadow:0 0 30px rgba(255,0,128,.4);transition:all .3s;letter-spacing:1px}
+.ctrl-btn{position:fixed;top:12px;right:12px;z-index:10000;background:linear-gradient(135deg,#ff0080,#7928ca);border:none;color:#fff;padding:14px 26px;border-radius:30px;cursor:pointer;font-family:'Luckiest Guy',cursive;font-size:14px;box-shadow:0 0 30px rgba(255,0,128,.4);transition:all .3s;letter-spacing:1px}
 .ctrl-btn:hover{transform:scale(1.1);box-shadow:0 0 50px rgba(255,0,128,.7)}
 
-/* ═══════ PANEL ═══════ */
+/* Panel */
 .pnl{position:fixed;top:0;right:-580px;width:560px;height:100vh;background:linear-gradient(180deg,rgba(8,4,28,.99),rgba(5,2,18,.99));border-left:1px solid rgba(255,0,128,.2);z-index:9999;transition:right .5s cubic-bezier(.68,-.55,.265,1.55);overflow-y:auto;padding:0}
 .pnl.open{right:0}
 .pnl::-webkit-scrollbar{width:4px}
-.pnl::-webkit-scrollbar-thumb{background:linear-gradient(var(--accent),var(--accent2));border-radius:4px}
+.pnl::-webkit-scrollbar-thumb{background:linear-gradient(#ff0080,#7928ca);border-radius:4px}
 .pnl-head{background:linear-gradient(135deg,rgba(255,0,128,.15),rgba(121,40,202,.1));padding:18px 22px 14px;border-bottom:1px solid rgba(255,0,128,.15);position:sticky;top:0;z-index:10;backdrop-filter:blur(20px)}
 .pnl-head h2{font-size:16px;color:#fff;letter-spacing:2px;display:flex;align-items:center;gap:8px}
 .pnl-head .fb-ind{font-size:9px;font-family:'Orbitron',sans-serif;padding:4px 10px;border-radius:12px;margin-left:auto}
@@ -38,29 +35,25 @@ body.wm .ctrl-btn,body.wm .particles,body.wm .stars,body.wm #mainV .glow-line,bo
 .pnl-head .fb-ind.err{background:rgba(255,68,68,.15);color:#ff4444;border:1px solid rgba(255,68,68,.3)}
 .pnl-body{padding:12px 20px 40px}
 
-/* Tabs */
 .tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px}
 .tab{padding:8px 14px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);color:rgba(255,255,255,.5);border-radius:12px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;transition:all .3s;white-space:nowrap}
-.tab:hover{background:rgba(255,0,128,.08);color:var(--accent);border-color:rgba(255,0,128,.2)}
-.tab.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:0 0 15px rgba(255,0,128,.25)}
+.tab:hover{background:rgba(255,0,128,.08);color:#ff0080;border-color:rgba(255,0,128,.2)}
+.tab.on{background:linear-gradient(135deg,#ff0080,#7928ca);color:#fff;border-color:transparent;box-shadow:0 0 15px rgba(255,0,128,.25)}
 .tp{display:none}.tp.on{display:block}
 
-/* Section Cards */
 .scard{background:linear-gradient(135deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;margin-bottom:14px;transition:border-color .3s}
 .scard:hover{border-color:rgba(255,0,128,.15)}
-.scard h3{color:var(--accent);font-size:12px;letter-spacing:2px;margin-bottom:12px;font-family:'Luckiest Guy',cursive;display:flex;align-items:center;gap:8px}
+.scard h3{color:#ff0080;font-size:12px;letter-spacing:2px;margin-bottom:12px;font-family:'Luckiest Guy',cursive;display:flex;align-items:center;gap:8px}
 .scard h3::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,0,128,.3),transparent)}
 
-/* Form Elements */
 .pnl label{color:rgba(255,255,255,.5);font-size:10px;display:block;margin-bottom:4px;font-family:'Orbitron',sans-serif;letter-spacing:.5px}
 .pnl input[type=text],.pnl input[type=number],.pnl select{width:100%;padding:10px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-size:11px;outline:none;margin-bottom:10px;transition:all .3s}
-.pnl input:focus,.pnl select:focus{border-color:var(--accent);box-shadow:0 0 12px rgba(255,0,128,.15);background:rgba(255,0,128,.03)}
+.pnl input:focus,.pnl select:focus{border-color:#ff0080;box-shadow:0 0 12px rgba(255,0,128,.15);background:rgba(255,0,128,.03)}
 .pnl input[type=color]{width:45px;height:36px;border:2px solid rgba(255,255,255,.1);border-radius:10px;cursor:pointer;background:transparent;padding:2px}
-.pnl input[type=range]{width:100%;accent-color:var(--accent);margin:4px 0 8px}
-.pnl input[type=checkbox]{accent-color:var(--accent);margin-right:6px}
+.pnl input[type=range]{width:100%;accent-color:#ff0080;margin:4px 0 8px}
+.pnl input[type=checkbox]{accent-color:#ff0080;margin-right:6px}
 
-/* Buttons */
-.bt{border:none;color:#fff;padding:10px 20px;border-radius:12px;cursor:pointer;font-family:'Luckiest Guy',cursive;font-size:11px;margin:3px;transition:all .3s;display:inline-flex;align-items:center;gap:6px;letter-spacing:.5px}
+.bt{border:none;color:#fff;padding:10px 20px;border-radius:12px;cursor:pointer;font-family:'Luckiest Guy',cursive;font-size:11px;margin:3px;transition:all .3s;display:inline-flex;align-items:center;gap:6px}
 .bt:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(0,0,0,.3)}
 .bt-pk{background:linear-gradient(135deg,#ff0080,#7928ca)}
 .bt-gn{background:linear-gradient(135deg,#00ff88,#00aa55);color:#000}
@@ -73,39 +66,32 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 .rw{display:flex;gap:8px;align-items:center;margin-bottom:6px}.rw input{flex:1}
 .xb{background:rgba(255,68,68,.2);border:1px solid rgba(255,68,68,.3);color:#ff4444;width:26px;height:26px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s}
 .xb:hover{background:rgba(255,68,68,.4)}
-
-/* Gift Box Editor */
 .gbx{background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px;margin-bottom:10px;transition:all .3s}
 .gbx:hover{border-color:rgba(255,0,128,.15)}
-.gbx .gtt{color:var(--accent);font-size:11px;margin-bottom:8px;font-family:'Luckiest Guy',cursive;display:flex;justify-content:space-between;align-items:center}
+.gbx .gtt{color:#ff0080;font-size:11px;margin-bottom:8px;font-family:'Luckiest Guy',cursive;display:flex;justify-content:space-between;align-items:center}
 .pimg{width:50px;height:50px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,0,128,.2)}
-
-/* Accordion */
-.acc{background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;margin:8px 0;overflow:hidden;transition:border-color .3s}
+.acc{background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;margin:8px 0;overflow:hidden}
 .acc:hover{border-color:rgba(255,0,128,.12)}
 .acc-h{padding:12px 16px;cursor:pointer;color:rgba(255,255,255,.7);font-size:12px;font-family:'Luckiest Guy',cursive;display:flex;justify-content:space-between;align-items:center;transition:all .3s}
-.acc-h:hover{color:var(--accent);background:rgba(255,0,128,.03)}
+.acc-h:hover{color:#ff0080;background:rgba(255,0,128,.03)}
 .acc-b{max-height:0;overflow:hidden;transition:max-height .5s ease,padding .3s;padding:0 16px}
 .acc.op .acc-b{max-height:4000px;padding:14px 16px 16px}
-.acc-h .ar{transition:transform .3s;font-size:10px;color:var(--accent)}
+.acc-h .ar{transition:transform .3s;font-size:10px;color:#ff0080}
 .acc.op .acc-h .ar{transform:rotate(180deg)}
-
-/* Widget URL */
-.wurl{background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.2);border-radius:10px;padding:12px 14px;margin:8px 0;word-break:break-all;color:#00d4ff;font-size:10px;font-family:monospace;line-height:1.6;transition:border-color .3s}
+.wurl{background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.2);border-radius:10px;padding:12px 14px;margin:8px 0;word-break:break-all;color:#00d4ff;font-size:10px;font-family:monospace;line-height:1.6}
 .wurl:hover{border-color:rgba(0,212,255,.5)}
 
-/* ═══════ PARÇACIKLAR ═══════ */
+/* Particles */
 .particles,.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
 .ptc{position:absolute;border-radius:50%;animation:ptcF linear infinite;opacity:0}
 @keyframes ptcF{0%{transform:translateY(100vh) rotate(0);opacity:0}10%{opacity:.4}90%{opacity:.4}100%{transform:translateY(-10vh) rotate(720deg);opacity:0}}
 .star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;box-shadow:0 0 6px #fff,0 0 15px #ff0080;animation:starS linear infinite}
 @keyframes starS{0%{transform:translate(-80px,-80px);opacity:1}70%{opacity:1}100%{transform:translate(calc(100vw+80px),calc(100vh+80px));opacity:0}}
 
-/* Neon Flicker */
 .nfl{animation:fl var(--fs,3s) linear infinite}
 @keyframes fl{0%,19.9%,22%,62.9%,64%,64.9%,70%,100%{opacity:1}20%,21.9%,63%,63.9%,65%,69.9%{opacity:.33}}
 
-/* ═══════ HEDİYE GALERİSİ ═══════ */
+/* Gift Gallery */
 .g-sec{position:relative;z-index:10;margin-bottom:25px}
 .g-tit{text-align:center;margin-bottom:18px}
 .g-tit span{color:#fff}
@@ -114,11 +100,11 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 .gc:hover{transform:translateY(-20px) scale(1.12) rotateY(15deg)!important;z-index:5}
 .gc::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,.08) 50%,transparent 70%);animation:shim 3s ease-in-out infinite;pointer-events:none}
 @keyframes shim{0%{transform:translateX(-100%) translateY(-100%) rotate(45deg)}100%{transform:translateX(100%) translateY(100%) rotate(45deg)}}
-.gc-v{font-size:50px;margin-bottom:8px;filter:drop-shadow(0 0 8px rgba(255,255,255,.4))}
+.gc-v{font-size:38px;margin-bottom:8px;filter:drop-shadow(0 0 8px rgba(255,255,255,.4))}
 .gc-v img{width:50px;height:50px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(255,255,255,.4))}
 .gc-n{color:#fff;font-size:15px;text-align:center;letter-spacing:1px;text-shadow:0 0 10px rgba(0,0,0,.8),0 2px 4px rgba(0,0,0,.9);font-weight:900;-webkit-text-stroke:.3px rgba(255,255,255,.3)}
 .gc-vl{color:#fff;font-size:12px;margin-top:5px;font-family:'Orbitron',sans-serif;font-weight:700;text-shadow:0 0 10px rgba(0,0,0,.8),0 2px 4px rgba(0,0,0,.9);background:rgba(0,0,0,.4);padding:3px 10px;border-radius:8px}
-  
+
 /* Gift Animations */
 .gc[data-a=float]{animation:gFl 3s ease-in-out infinite}
 .gc[data-a=float]:nth-child(2){animation-delay:.4s}.gc[data-a=float]:nth-child(3){animation-delay:.8s}.gc[data-a=float]:nth-child(4){animation-delay:1.2s}.gc[data-a=float]:nth-child(5){animation-delay:1.6s}.gc[data-a=float]:nth-child(6){animation-delay:2s}
@@ -130,6 +116,8 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 .gc[data-a=flip]{animation:gFlp 3s ease-in-out infinite}@keyframes gFlp{0%{transform:perspective(400px) rotateY(0)}40%{transform:perspective(400px) rotateY(180deg)}100%{transform:perspective(400px) rotateY(360deg)}}
 .gc[data-a=spin]{animation:gSp 5s linear infinite}@keyframes gSp{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
 .gc[data-a=glitch]{animation:gGl 3s steps(20) infinite}@keyframes gGl{0%,50%,100%{transform:translate(0)}10%{transform:translate(-2px,2px)}20%{transform:translate(2px,-2px)}30%{transform:translate(-1px)}40%{transform:translate(1px,-1px)}}
+
+/* Gift Scroll */
 .g-scroll{overflow:hidden;position:relative}
 .g-scroll::before,.g-scroll::after{content:'';position:absolute;z-index:3;pointer-events:none}
 .g-scroll.horizontal{overflow:hidden}
@@ -147,24 +135,26 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 .g-track.scroll-right{animation:scrollR var(--gss,20s) linear infinite}
 .g-track.scroll-up{animation:scrollU var(--gss,20s) linear infinite}
 .g-track.scroll-down{animation:scrollD var(--gss,20s) linear infinite}
-.g-track.paused,.g-scroll:hover .g-track{animation-play-state:paused}
+.g-scroll:hover .g-track{animation-play-state:paused}
 @keyframes scrollL{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 @keyframes scrollR{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
 @keyframes scrollU{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
 @keyframes scrollD{0%{transform:translateY(-50%)}100%{transform:translateY(0)}}
+
+/* Gift Vertical Layout */
 .g-wrap.vertical{flex-direction:column;align-items:center;gap:8px}
-.g-wrap.vertical .gc{width:82%;max-width:320px;height:auto;min-height:70px;flex-direction:row;padding:10px 18px;gap:14px;border-radius:14px}
+.g-wrap.vertical .gc{width:85%;max-width:320px;height:auto;min-height:70px;flex-direction:row;padding:10px 18px;gap:14px;border-radius:14px}
 .g-wrap.vertical .gc .gc-v{font-size:32px;margin-bottom:0;flex-shrink:0}
 .g-wrap.vertical .gc .gc-v img{width:45px;height:45px}
 .g-wrap.vertical .gc .gc-n{font-size:15px;text-align:left}
 .g-wrap.vertical .gc .gc-vl{margin-top:0;margin-left:auto;flex-shrink:0}
-  
-/* ═══════ DEKORATIF ═══════ */
+
+/* Decorative */
 .glow-line{width:80%;max-width:600px;height:2px;margin:25px auto;background:linear-gradient(90deg,transparent,#ff0080,#00d4ff,#00ff88,transparent);border-radius:2px;box-shadow:0 0 10px rgba(255,0,128,.4);position:relative;z-index:10}
 .sub-area{text-align:center;margin:25px 0;position:relative;z-index:10}
 .sub-area span{color:#fff}
 
-/* ═══════ BOARD / LİSTELER ═══════ */
+/* Board / Lists */
 .boards{display:flex;gap:25px;justify-content:center;flex-wrap:wrap;position:relative;z-index:10;margin-top:25px}
 .brd{width:340px;border-radius:20px;overflow:hidden;position:relative}
 .brd-h{padding:16px 18px;text-align:center;position:relative;overflow:hidden}
@@ -173,22 +163,20 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 @keyframes scnL{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 .brd-b{padding:10px 14px}
 
-/* ═══════ PODYUM / TAHT ═══════ */
+/* Throne / Podium */
 .podium{padding:10px 0}
 .throne-wrap{text-align:center;margin-bottom:12px}
 .throne{display:inline-block;position:relative;padding:20px 35px 16px;background:linear-gradient(180deg,rgba(255,215,0,.12),rgba(255,140,0,.05));border:2px solid rgba(255,215,0,.5);border-radius:16px;box-shadow:0 0 40px rgba(255,215,0,.2),inset 0 0 25px rgba(255,215,0,.08);min-width:180px}
 .throne::before{content:'👑';position:absolute;top:-28px;left:50%;transform:translateX(-50%);font-size:36px;filter:drop-shadow(0 0 12px rgba(255,215,0,.8));animation:crFloat 2s ease-in-out infinite}
 @keyframes crFloat{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-10px)}}
-.throne::after{content:'🪑';position:absolute;bottom:5px;right:8px;font-size:20px;opacity:.3}
 .throne .t-rank{font-size:11px;color:rgba(255,215,0,.6);font-family:'Orbitron',sans-serif;letter-spacing:2px;margin-bottom:4px}
 .throne .t-name{font-size:22px;color:#ffd700;text-shadow:0 0 15px rgba(255,215,0,.5),0 0 30px rgba(255,215,0,.2);letter-spacing:2px}
 .throne .t-score{font-size:26px;color:#ffd700;font-weight:900;text-shadow:0 0 20px rgba(255,215,0,.6);margin-top:4px;font-family:'Orbitron',sans-serif}
 .throne-sparkle{position:absolute;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;border-radius:16px}
 .throne-sparkle span{position:absolute;width:4px;height:4px;background:#ffd700;border-radius:50%;animation:sparkle 2s linear infinite}
 @keyframes sparkle{0%{opacity:0;transform:scale(0)}50%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(0)}}
-
 .runners{display:flex;justify-content:center;gap:16px;margin-top:8px}
-.runner{padding:14px 22px;border-radius:14px;text-align:center;min-width:130px;position:relative}
+.runner{padding:14px 22px;border-radius:14px;text-align:center;min-width:130px}
 .runner .r-badge{font-size:22px;margin-bottom:4px}
 .runner .r-rank{font-size:9px;font-family:'Orbitron',sans-serif;letter-spacing:2px;margin-bottom:2px}
 .runner .r-name{font-size:15px;letter-spacing:1px}
@@ -200,7 +188,7 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 .runner-3 .r-rank,.runner-3 .r-name{color:#cd7f32;text-shadow:0 0 10px rgba(205,127,50,.4)}
 .runner-3 .r-score{color:#daa520;text-shadow:0 0 12px rgba(205,127,50,.5)}
 
-/* ═══════ KAYAN LİSTE ═══════ */
+/* Scrolling List */
 .scroll-box{height:180px;overflow:hidden;position:relative;margin-top:10px;border-top:1px solid rgba(255,255,255,.05);padding-top:8px}
 .scroll-box::before,.scroll-box::after{content:'';position:absolute;left:0;width:100%;height:25px;z-index:2;pointer-events:none}
 .scroll-box::before{top:0;background:linear-gradient(to bottom,rgba(10,10,30,.9),transparent)}
@@ -208,17 +196,15 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 .scroll-track{display:flex;flex-direction:column}
 .scroll-track.up{animation:tickUp var(--ss,25s) linear infinite}
 .scroll-track.down{animation:tickDown var(--ss,25s) linear infinite}
-.scroll-track.paused{animation-play-state:paused}
 @keyframes tickUp{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
 @keyframes tickDown{0%{transform:translateY(-50%)}100%{transform:translateY(0)}}
-
-.sr{display:flex;align-items:center;padding:8px 12px;margin:3px 0;border-radius:10px;transition:all .3s}
+.sr{display:flex;align-items:center;padding:8px 12px;margin:3px 0;border-radius:10px}
 .sr:hover{transform:translateX(5px)}
 .sr-rank{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;margin-right:10px;flex-shrink:0;font-family:'Orbitron',sans-serif;font-weight:900;background:rgba(255,255,255,.06);color:rgba(255,255,255,.5)}
 .sr-name{color:rgba(255,255,255,.8);font-size:12px;flex:1;letter-spacing:1px}
 .sr-score{font-size:13px;font-weight:900;flex-shrink:0;font-family:'Orbitron',sans-serif}
 
-/* Widget Enter Animations */
+/* Widget Enter */
 .we[data-w=fadeIn]{animation:wFd 1s ease both}@keyframes wFd{from{opacity:0}to{opacity:1}}
 .we[data-w=slideDown]{animation:wSD .8s ease-out both}@keyframes wSD{from{opacity:0;transform:translateY(-60px)}to{opacity:1;transform:translateY(0)}}
 .we[data-w=slideUp]{animation:wSU .8s ease-out both}@keyframes wSU{from{opacity:0;transform:translateY(60px)}to{opacity:1;transform:translateY(0)}}
@@ -229,7 +215,7 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 .foot-area{text-align:center;margin-top:35px;position:relative;z-index:10}
 .foot-area p{font-family:'Orbitron',sans-serif;font-size:9px;color:rgba(255,255,255,.2);letter-spacing:3px}
 
-@media(max-width:768px){.boards{flex-direction:column;align-items:center}.brd{width:95%}.gc{width:120px;height:160px}.pnl{width:100%;right:-110%}.throne .t-name{font-size:16px}.runners{flex-direction:column;align-items:center}}
+@media(max-width:768px){.boards{flex-direction:column;align-items:center}.brd{width:95%}.gc{width:95px;height:130px}.pnl{width:100%;right:-110%}.throne .t-name{font-size:16px}.runners{flex-direction:column;align-items:center}}
 </style>
 </head>
 <body>
@@ -238,19 +224,10 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 <input type="file" id="imgUp" accept="image/*" style="display:none">
 <div class="fbs"><div class="fbd wait" id="fbD"></div><span id="fbT">Bağlanıyor...</span></div>
 <button class="ctrl-btn" onclick="toggleP()">⚙️ AYARLAR</button>
-
-<!-- PANEL -->
 <div class="pnl" id="pnl">
-<div class="pnl-head">
-<h2>⚙️ OVERLAY AYARLARI <span class="fb-ind" id="fbInd">...</span></h2>
+<div class="pnl-head"><h2>⚙️ OVERLAY AYARLARI <span class="fb-ind" id="fbInd">...</span></h2></div>
+<div class="pnl-body"><div class="tabs" id="tabBar"></div><div id="tabPanes"></div></div>
 </div>
-<div class="pnl-body">
-<div class="tabs" id="tabBar"></div>
-<div id="tabPanes"></div>
-</div>
-</div>
-
-<!-- OVERLAY -->
 <div id="mainV" style="position:relative;z-index:10;padding:20px">
 <div id="wG1" class="g-sec we"></div>
 <div id="wG2" class="g-sec we"></div>
@@ -265,11 +242,10 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 <div class="glow-line"></div>
 <div class="foot-area"><p id="elFT"></p></div>
 </div>
-
 <script>
-// ╔═══════════════════════════════════════════════════════╗
-// ║  🔥 FIREBASE CONFIG — KENDİ BİLGİLERİNİ BURAYA YAZ  ║
-// ╚═══════════════════════════════════════════════════════╝
+// ══════════════════════════════════════════
+//  FIREBASE CONFIG — KENDİ BİLGİLERİNİ YAZ
+// ══════════════════════════════════════════
 const firebaseConfig = {
   apiKey: "AIzaSyAfDdE3WmS3wx-Acz0WfEfwW5w2MLjTsms",
   authDomain: "tiktok-overlay-8cd75.firebaseapp.com",
@@ -279,85 +255,75 @@ const firebaseConfig = {
   messagingSenderId: "156041390775",
   appId: "1:156041390775:web:be7153db5388ff97a4bb32"
 };
-// ═════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
 
 let db,dbRef,fbOK=false;
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();dbRef=db.ref('overlayV2');fbOK=true}catch(e){console.error(e)}
+const QP=new URLSearchParams(location.search),WM=QP.get('widget');
 
-const QP=new URLSearchParams(location.search);
-const WM=QP.get('widget');
-
-// ═══════ DEFAULT CONFIG ═══════
 let C=getDef();
 function getDef(){return{
   st:{text:'⚡ EN ÇOK HEDİYE GÖNDERENLER ⚡',size:24,nc:'#00d4ff',ni:80,nb:100,fl:false,fs:3},
   ft:'CANLI YAYIN • TIKTOK LIVE',
   G:{
-   1:{title:'🎁 HEDİYE GALERİSİ 1',ts:30,ly:'horizontal',sm:'none',sdir:'left',sspd:20,nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
+    1:{title:'🎁 HEDİYE GALERİSİ 1',ts:30,ly:'horizontal',sm:'none',sdir:'left',sspd:20,nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
       {tp:'emoji',em:'🌹',nm:'GÜL',vl:'1 Coin',cl:'#ff0080',img:''},
       {tp:'emoji',em:'💎',nm:'ELMAS',vl:'100 Coin',cl:'#00d4ff',img:''},
       {tp:'emoji',em:'🦁',nm:'ASLAN',vl:'500 Coin',cl:'#00ff88',img:''},
       {tp:'emoji',em:'🚀',nm:'ROKET',vl:'1000 Coin',cl:'#b200ff',img:''},
-      {tp:'emoji',em:'👑',nm:'TAÇ',vl:'5000 Coin',cl:'#ffd700',img:''}
-    ]},
-    2:{title:'🎁 HEDİYE GALERİSİ 2',ts:28,ly:'horizontal',sm:'none',sdir:'left',sspd:20,:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
+      {tp:'emoji',em:'👑',nm:'TAÇ',vl:'5000 Coin',cl:'#ffd700',img:''}]},
+    2:{title:'🎁 HEDİYE GALERİSİ 2',ts:28,ly:'horizontal',sm:'none',sdir:'left',sspd:20,nc:'#00d4ff',ni:100,nb:120,fl:false,fs:3,ga:'pulse',wa:'fadeIn',gifts:[
       {tp:'emoji',em:'💝',nm:'KALP',vl:'10 Coin',cl:'#ff69b4',img:''},
       {tp:'emoji',em:'⭐',nm:'YILDIZ',vl:'50 Coin',cl:'#ffd700',img:''},
-      {tp:'emoji',em:'🎵',nm:'MÜZİK',vl:'200 Coin',cl:'#9b59b6',img:''}
-    ]},
-    3:{title:'🎁 HEDİYE GALERİSİ 3',ts:28,ly:'horizontal',sm:'none',sdir:'left',sspd:20,nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
+      {tp:'emoji',em:'🎵',nm:'MÜZİK',vl:'200 Coin',cl:'#9b59b6',img:''}]},
+    3:{title:'🎁 HEDİYE GALERİSİ 3',ts:28,ly:'horizontal',sm:'none',sdir:'left',sspd:20,nc:'#00ff88',ni:100,nb:120,fl:false,fs:3,ga:'bounce',wa:'fadeIn',gifts:[
       {tp:'emoji',em:'🏆',nm:'KUPA',vl:'2000 Coin',cl:'#ffd700',img:''},
-      {tp:'emoji',em:'🌈',nm:'GÖKKUŞAĞI',vl:'3000 Coin',cl:'#ff0080',img:''}
-    ]}
+      {tp:'emoji',em:'🌈',nm:'GÖKKUŞAĞI',vl:'3000 Coin',cl:'#ff0080',img:''}]}
   },
   L:{
     1:{t:'🏆 TOP OYUNCULAR',nc:'#ff0080',ni:100,nb:100,fl:true,fs:2.5,wa:'fadeIn',sd:'up',ss:25,p:[
-      {n:'KralOyuncu',s:2500},{n:'NeonMaster',s:2100},{n:'GamerTR',s:1800},{n:'YıldızAvcı',s:1500},{n:'ShadowFox',s:1200},{n:'TurboKing',s:1000},{n:'StormBlade',s:850}
-    ]},
+      {n:'KralOyuncu',s:2500},{n:'NeonMaster',s:2100},{n:'GamerTR',s:1800},{n:'YıldızAvcı',s:1500},{n:'ShadowFox',s:1200},{n:'TurboKing',s:1000},{n:'StormBlade',s:850}]},
     2:{t:'⚡ HEDİYE KRALLARI',nc:'#00d4ff',ni:100,nb:100,fl:true,fs:3,wa:'fadeIn',sd:'down',ss:30,p:[
-      {n:'DiamondKing',s:15000},{n:'GiftQueen',s:12000},{n:'RoseHero',s:9500},{n:'CoinMaster',s:7000},{n:'StarLight',s:5500},{n:'MoonRider',s:4200}
-    ]},
+      {n:'DiamondKing',s:15000},{n:'GiftQueen',s:12000},{n:'RoseHero',s:9500},{n:'CoinMaster',s:7000},{n:'StarLight',s:5500},{n:'MoonRider',s:4200}]},
     3:{t:'🌟 GÜNÜN YILDIZLARI',nc:'#00ff88',ni:100,nb:100,fl:false,fs:3,wa:'fadeIn',sd:'up',ss:20,p:[
-      {n:'EfsaneOyuncu',s:980},{n:'TurboGamer',s:870},{n:'PhoenixTR',s:750},{n:'CosmicRay',s:640},{n:'BlazeFire',s:520}
-    ]}
+      {n:'EfsaneOyuncu',s:980},{n:'TurboGamer',s:870},{n:'PhoenixTR',s:750},{n:'CosmicRay',s:640},{n:'BlazeFire',s:520}]}
   },
   bg:{c:'#0a0a0a',o:100},prt:25,str:5
 }}
 
-// ═══════ MERGE ═══════
-function merge(d,s){if(!s)return d;const o={...d};for(const k in s){if(s[k]!==null&&typeof s[k]==='object'&&!Array.isArray(s[k])&&typeof d[k]==='object'&&!Array.isArray(d[k])){o[k]=merge(d[k],s[k])}else{o[k]=s[k]}}return o}
-function fixArrays(c){
-  for(let n=1;n<=3;n++){if(c.L&&c.L[n]&&c.L[n].p&&!Array.isArray(c.L[n].p))c.L[n].p=Object.values(c.L[n].p);
-    if(c.G&&c.G[n]&&c.G[n].gifts&&!Array.isArray(c.G[n].gifts))c.G[n].gifts=Object.values(c.G[n].gifts)}
-}
+function merge(d,s){if(!s)return d;const o={...d};for(const k in s){if(s[k]!==null&&typeof s[k]==='object'&&!Array.isArray(s[k])&&typeof d[k]==='object'&&!Array.isArray(d[k]))o[k]=merge(d[k],s[k]);else o[k]=s[k]}return o}
+function fixArr(c){for(let n=1;n<=3;n++){if(c.L&&c.L[n]&&c.L[n].p&&!Array.isArray(c.L[n].p))c.L[n].p=Object.values(c.L[n].p);if(c.G&&c.G[n]&&c.G[n].gifts&&!Array.isArray(c.G[n].gifts))c.G[n].gifts=Object.values(c.G[n].gifts)}}
 
-// ═══════ FIREBASE ═══════
 let saveT;
 function saveFB(){if(!fbOK)return;clearTimeout(saveT);saveT=setTimeout(()=>{dbRef.set(C).then(()=>setFB('ok','Kaydedildi ✓')).catch(e=>{setFB('err','Hata!');console.error(e)})},400)}
-function loadFB(cb){if(!fbOK){cb();return}dbRef.once('value',s=>{if(s.exists()){C=merge(getDef(),s.val());fixArrays(C)}else{C=getDef();dbRef.set(C)}setFB('ok','Bağlı ✓');cb()},e=>{setFB('err','Bağlantı hatası!');cb()})}
-function listenFB(){if(!fbOK)return;dbRef.on('value',s=>{if(!s.exists())return;C=merge(getDef(),s.val());fixArrays(C);renderAll();setFB('ok','Canlı ✓')})}
-function setFB(t,m){const d=$('fbD'),x=$('fbT'),i=$('fbInd');if(d){d.className='fbd '+t}if(x)x.textContent=m;if(i){i.className='fb-ind '+t;i.textContent=t==='ok'?'🟢 Bağlı':'🔴 Hata'}}
+function loadFB(cb){if(!fbOK){cb();return}dbRef.once('value',s=>{if(s.exists()){C=merge(getDef(),s.val());fixArr(C)}else{C=getDef();dbRef.set(C)}setFB('ok','Bağlı ✓');cb()},e=>{setFB('err','Bağlantı hatası!');cb()})}
+function listenFB(){if(!fbOK)return;dbRef.on('value',s=>{if(!s.exists())return;C=merge(getDef(),s.val());fixArr(C);renderAll();setFB('ok','Canlı ✓')})}
+function setFB(t,m){const d=$('fbD'),x=$('fbT'),i=$('fbInd');if(d)d.className='fbd '+t;if(x)x.textContent=m;if(i){i.className='fb-ind '+t;i.textContent=t==='ok'?'🟢 Bağlı':'🔴 Hata'}}
 
-// ═══════ NEON ═══════
 function mkN(c,i,b){const f=i/100;return`0 0 ${7*f}px #fff,0 0 ${10*f}px #fff,0 0 ${21*f}px #fff,0 0 ${42*f}px ${c},0 0 ${82*f}px ${c},0 0 ${b*f}px ${c}`}
 function setN(el,o){if(!el)return;el.style.textShadow=mkN(o.nc,o.ni,o.nb);el.style.color='#fff';if(o.fl){el.classList.add('nfl');el.style.setProperty('--fs',o.fs+'s')}else el.classList.remove('nfl')}
 
-// ═══════ RENDER ═══════
 function renderAll(){
   const st=$('elST');if(st){st.textContent=C.st.text;st.style.fontSize=C.st.size+'px';setN(st,C.st)}
-  $('elFT').textContent=C.ft;
+  const ft=$('elFT');if(ft)ft.textContent=C.ft;
   for(let n=1;n<=3;n++){renderGifts(n);renderList(n)}
   applyBg();genPrt();genStr();
+}
+
+function buildCard(g,anim){
+  return`<div class="gc" data-a="${anim}" style="border:5px solid ${g.cl}cc;box-shadow:0 0 20px ${g.cl}55,0 0 40px ${g.cl}22,inset 0 0 20px ${g.cl}20;background:linear-gradient(135deg,${g.cl}30,${g.cl}15);flex-shrink:0">
+    ${g.tp==='image'&&g.img?`<div class="gc-v"><img src="${g.img}"></div>`:`<div class="gc-v">${g.em||'🎁'}</div>`}
+    <div class="gc-n">${g.nm||''}</div><div class="gc-vl">${g.vl||''}</div></div>`;
 }
 
 function renderGifts(n){
   const G=C.G[n];if(!G)return;
   const sec=$('wG'+n);if(!sec)return;
   sec.setAttribute('data-w',G.wa||'fadeIn');
-  sec.innerHTML=`<div class="g-tit"><span id="gT${n}" style="font-size:${G.ts||28}px"></span></div><div class="g-wrap" id="gW${n}"></div>`;
-  const te=$('gT'+n);te.textContent=G.title;setN(te,G);
-  const w=$('gW'+n);w.className='g-wrap'+(G.ly==='vertical'?' vertical':'');
-   const w=$('gW'+n);
+  sec.innerHTML=`<div class="g-tit"><span id="gT${n}" style="font-size:${G.ts||28}px"></span></div><div id="gW${n}"></div>`;
+  const te=$('gT'+n);if(te){te.textContent=G.title;setN(te,G)}
+  const w=$('gW'+n);if(!w)return;
+  if(!G.gifts||!G.gifts.length)return;
   const scrollMode=G.sm||'none';
   const scrollDir=G.sdir||'left';
   const scrollSpd=G.sspd||20;
@@ -365,22 +331,16 @@ function renderGifts(n){
 
   if(scrollMode==='scroll'){
     const orient=isVert?'vertical':'horizontal';
-    const dirClass=isVert?(scrollDir==='down'?'scroll-down':'scroll-up'):(scrollDir==='right'?'scroll-right':'scroll-left');
+    const dirClass=isVert?(scrollDir==='down'||scrollDir==='right'?'scroll-down':'scroll-up'):(scrollDir==='right'||scrollDir==='down'?'scroll-right':'scroll-left');
     w.className='g-scroll '+orient;
-    let cardsHTML='';
-    if(!G.gifts||!G.gifts.length)return;
-    G.gifts.forEach((g,i)=>{
-      let v=g.tp==='image'&&g.img?`<div class="gc-v"><img src="${g.img}"></div>`:`<div class="gc-v">${g.em||'🎁'}</div>`;
-      cardsHTML+=`<div class="gc" data-a="none" style="border:5px solid ${g.cl}cc;box-shadow:0 0 20px ${g.cl}55,0 0 40px ${g.cl}22,inset 0 0 20px ${g.cl}20;background:linear-gradient(135deg,${g.cl}30,${g.cl}15);flex-shrink:0">${v}<div class="gc-n">${g.nm||''}</div><div class="gc-vl">${g.vl||''}</div></div>`;
-    });
-    w.innerHTML=`<div class="g-track ${orient} ${dirClass}" style="--gss:${scrollSpd}s">${cardsHTML}${cardsHTML}</div>`;
+    let cards='';
+    G.gifts.forEach(g=>{cards+=buildCard(g,'none')});
+    w.innerHTML=`<div class="g-track ${orient} ${dirClass}" style="--gss:${scrollSpd}s">${cards}${cards}</div>`;
   } else {
     w.className='g-wrap'+(isVert?' vertical':'');
-    if(!G.gifts||!G.gifts.length)return;
     G.gifts.forEach((g,i)=>{
       const c=document.createElement('div');c.className='gc';c.setAttribute('data-a',G.ga||'float');
-      c.style.border=`5px solid ${g.cl}cc`;c.style.boxShadow=`0 0 20px ${g.cl}55,0 0 40px ${g.cl}22,inset 0 0 20px ${g.cl}20`;
-      c.style.background=`linear-gradient(135deg,${g.cl}30,${g.cl}15)`;c.style.animationDelay=(i*.4)+'s';
+      c.style.cssText=`border:5px solid ${g.cl}cc;box-shadow:0 0 20px ${g.cl}55,0 0 40px ${g.cl}22,inset 0 0 20px ${g.cl}20;background:linear-gradient(135deg,${g.cl}30,${g.cl}15);animation-delay:${i*.4}s`;
       let v=g.tp==='image'&&g.img?`<div class="gc-v"><img src="${g.img}"></div>`:`<div class="gc-v">${g.em||'🎁'}</div>`;
       c.innerHTML=`${v}<div class="gc-n">${g.nm||''}</div><div class="gc-vl">${g.vl||''}</div>`;
       c.onmouseenter=()=>c.style.boxShadow=`0 0 50px ${g.cl}55,inset 0 0 35px ${g.cl}25`;
@@ -388,55 +348,26 @@ function renderGifts(n){
       w.appendChild(c);
     });
   }
+}
 
 function renderList(n){
   const L=C.L[n];if(!L)return;
   const brd=$('wL'+n);if(!brd)return;
   brd.setAttribute('data-w',L.wa||'fadeIn');
-  brd.style.border=`2px solid ${L.nc}55`;brd.style.boxShadow=`0 0 35px ${L.nc}18`;
-  brd.style.background=`linear-gradient(180deg,${L.nc}12,rgba(10,10,30,.95))`;
+  brd.style.cssText=`border:2px solid ${L.nc}55;box-shadow:0 0 35px ${L.nc}18;background:linear-gradient(180deg,${L.nc}12,rgba(10,10,30,.95));border-radius:20px;overflow:hidden`;
   const sorted=[...(L.p||[])].sort((a,b)=>(b.s||0)-(a.s||0));
-  const top3=sorted.slice(0,3);
-  const rest=sorted.slice(3);
-
+  const top3=sorted.slice(0,3),rest=sorted.slice(3);
   let html=`<div class="brd-h" style="background:linear-gradient(135deg,${L.nc}30,${L.nc}10)"><h2 id="lt${n}"></h2></div><div class="brd-b"><div class="podium">`;
-
-  // Throne (#1)
-  if(top3[0]){
-    html+=`<div class="throne-wrap"><div class="throne">
-      <div class="throne-sparkle">${Array.from({length:6},(_,i)=>`<span style="left:${Math.random()*90}%;top:${Math.random()*90}%;animation-delay:${i*.3}s"></span>`).join('')}</div>
-      <div class="t-rank">★ 1. SIRA ★</div>
-      <div class="t-name">${top3[0].n||''}</div>
-      <div class="t-score">${fmtS(top3[0].s||0)}</div>
-    </div></div>`;
-  }
-
-  // Runners (#2 & #3)
-  if(top3.length>1){
-    html+=`<div class="runners">`;
-    if(top3[1]) html+=`<div class="runner runner-2"><div class="r-badge">🥈</div><div class="r-rank">2. SIRA</div><div class="r-name">${top3[1].n||''}</div><div class="r-score">${fmtS(top3[1].s||0)}</div></div>`;
-    if(top3[2]) html+=`<div class="runner runner-3"><div class="r-badge">🥉</div><div class="r-rank">3. SIRA</div><div class="r-name">${top3[2].n||''}</div><div class="r-score">${fmtS(top3[2].s||0)}</div></div>`;
-    html+=`</div>`;
-  }
+  if(top3[0])html+=`<div class="throne-wrap"><div class="throne"><div class="throne-sparkle">${Array.from({length:6},(_,i)=>`<span style="left:${Math.random()*90}%;top:${Math.random()*90}%;animation-delay:${i*.3}s"></span>`).join('')}</div><div class="t-rank">★ 1. SIRA ★</div><div class="t-name">${top3[0].n||''}</div><div class="t-score">${fmtS(top3[0].s||0)}</div></div></div>`;
+  if(top3.length>1){html+=`<div class="runners">`;
+    if(top3[1])html+=`<div class="runner runner-2"><div class="r-badge">🥈</div><div class="r-rank">2. SIRA</div><div class="r-name">${top3[1].n||''}</div><div class="r-score">${fmtS(top3[1].s||0)}</div></div>`;
+    if(top3[2])html+=`<div class="runner runner-3"><div class="r-badge">🥉</div><div class="r-rank">3. SIRA</div><div class="r-name">${top3[2].n||''}</div><div class="r-score">${fmtS(top3[2].s||0)}</div></div>`;
+    html+=`</div>`}
   html+=`</div>`;
-
-  // Scroll area
-  if(rest.length>0){
-    const dir=L.sd||'up';
-    const speed=L.ss||25;
-    let rows='';
-    rest.forEach((p,i)=>{
-      rows+=`<div class="sr" style="background:linear-gradient(90deg,${L.nc}10,${L.nc}02);border-left:3px solid ${L.nc}55">
-        <div class="sr-rank">${i+4}</div>
-        <div class="sr-name">${p.n||''}</div>
-        <div class="sr-score" style="color:${L.nc};text-shadow:0 0 8px ${L.nc}44">${fmtS(p.s||0)}</div>
-      </div>`;
-    });
-    html+=`<div class="scroll-box"><div class="scroll-track ${dir}" style="--ss:${speed}s">${rows}${rows}</div></div>`;
-  }
-
-  html+=`</div>`;
-  brd.innerHTML=html;
+  if(rest.length>0){const dir=L.sd||'up',speed=L.ss||25;let rows='';
+    rest.forEach((p,i)=>{rows+=`<div class="sr" style="background:linear-gradient(90deg,${L.nc}10,${L.nc}02);border-left:3px solid ${L.nc}55"><div class="sr-rank">${i+4}</div><div class="sr-name">${p.n||''}</div><div class="sr-score" style="color:${L.nc};text-shadow:0 0 8px ${L.nc}44">${fmtS(p.s||0)}</div></div>`});
+    html+=`<div class="scroll-box"><div class="scroll-track ${dir}" style="--ss:${speed}s">${rows}${rows}</div></div>`}
+  html+=`</div>`;brd.innerHTML=html;
   const te=$('lt'+n);if(te){te.textContent=L.t;setN(te,L)}
 }
 
@@ -445,118 +376,86 @@ function applyBg(){if(!C.bg)return;const r=parseInt(C.bg.c.substr(1,2),16),g=par
 function genPrt(){const c=$('particles');if(!c)return;c.innerHTML='';const cls=['#ff0080','#00d4ff','#00ff88','#b200ff','#ffd700'];for(let i=0;i<(C.prt||0);i++){const d=document.createElement('div');d.className='ptc';const s=Math.random()*6+2,cl=cls[Math.floor(Math.random()*cls.length)];d.style.cssText=`width:${s}px;height:${s}px;background:${cl};box-shadow:0 0 ${s*2}px ${cl};left:${Math.random()*100}%;animation-duration:${Math.random()*10+8}s;animation-delay:${Math.random()*10}s`;c.appendChild(d)}}
 function genStr(){const c=$('stars');if(!c)return;c.innerHTML='';for(let i=0;i<(C.str||0);i++){const d=document.createElement('div');d.className='star';d.style.cssText=`top:${Math.random()*50}%;left:${Math.random()*30}%;animation-duration:${Math.random()*3+2}s;animation-delay:${Math.random()*8}s`;c.appendChild(d)}}
 
-// ═══════ WIDGET MODE ═══════
 function initWidget(){
-  document.body.classList.add('wm');
-  document.querySelector('.ctrl-btn').style.display='none';
+  document.body.classList.add('wm');document.querySelector('.ctrl-btn').style.display='none';
   document.querySelectorAll('#mainV > *').forEach(e=>e.style.display='none');
   if(WM.startsWith('gifts')){const n=WM.replace('gifts','');$('wG'+n).style.display=''}
   else if(WM.startsWith('list')){const n=WM.replace('list','');$('brdsAll').style.display='flex';[1,2,3].forEach(i=>$('wL'+i).style.display=i==n?'':'none')}
   listenFB();
 }
 
-// ═══════ PANEL ═══════
 function toggleP(){$('pnl').classList.toggle('open')}
 
 function buildPanel(){
-  const tabs=[
-    {id:'pY',l:'📝 Yazılar'},
-    {id:'pG1',l:'🎁 Hediye 1'},
-    {id:'pG2',l:'🎁 Hediye 2'},
-    {id:'pG3',l:'🎁 Hediye 3'},
-    {id:'pL1',l:'🏆 Liste 1'},
-    {id:'pL2',l:'⚡ Liste 2'},
-    {id:'pL3',l:'🌟 Liste 3'},
-    {id:'pW',l:'🔗 Widget'},
-    {id:'pT',l:'🎨 Tema'}
-  ];
+  const tabs=[{id:'pY',l:'📝 Yazılar'},{id:'pG1',l:'🎁 Hediye 1'},{id:'pG2',l:'🎁 Hediye 2'},{id:'pG3',l:'🎁 Hediye 3'},{id:'pL1',l:'🏆 Liste 1'},{id:'pL2',l:'⚡ Liste 2'},{id:'pL3',l:'🌟 Liste 3'},{id:'pW',l:'🔗 Widget'},{id:'pT',l:'🎨 Tema'}];
   const bar=$('tabBar'),pns=$('tabPanes');bar.innerHTML='';pns.innerHTML='';
   tabs.forEach((t,i)=>{
     const b=document.createElement('div');b.className='tab'+(i===0?' on':'');b.textContent=t.l;
     b.onclick=()=>{bar.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));pns.querySelectorAll('.tp').forEach(x=>x.classList.remove('on'));b.classList.add('on');$(t.id).classList.add('on')};
-    bar.appendChild(b);
-    const p=document.createElement('div');p.id=t.id;p.className='tp'+(i===0?' on':'');pns.appendChild(p);
+    bar.appendChild(b);const p=document.createElement('div');p.id=t.id;p.className='tp'+(i===0?' on':'');pns.appendChild(p);
   });
   bldY();for(let n=1;n<=3;n++){bldGift(n);bldList(n)}bldW();bldT();
 }
 
-// --- YAZILAR ---
 function bldY(){
-  $('pY').innerHTML=`
-  <div class="scard"><h3>📝 Alt Başlık / Duyuru</h3>
+  $('pY').innerHTML=`<div class="scard"><h3>📝 Alt Başlık</h3>
   <label>Metin</label><input type="text" id="iST" value="${esc(C.st.text)}">
-  <label>Boyut (${C.st.size}px)</label><input type="range" id="iSS" min="10" max="60" value="${C.st.size}" oninput="this.previousElementSibling.textContent='Boyut ('+this.value+'px)'">
-  <div class="inl"><div><label>🎨 Neon Renk</label><input type="color" id="iSC" value="${C.st.nc}"></div>
-  <div><label>💡 Yoğunluk</label><input type="range" id="iSI" min="0" max="200" value="${C.st.ni}"></div></div>
-  <div class="inl"><div><label>🌫 Blur</label><input type="range" id="iSB" min="0" max="300" value="${C.st.nb}"></div>
-  <div><label>⚡ Titreşim Hızı</label><input type="range" id="iSFS" min="5" max="80" value="${C.st.fs*10}"></div></div>
-  <label><input type="checkbox" id="iSFL" ${C.st.fl?'checked':''}> Neon Titreşim Aktif</label></div>
+  <label>Boyut</label><input type="range" id="iSS" min="10" max="60" value="${C.st.size}">
+  <div class="inl"><div><label>Neon Renk</label><input type="color" id="iSC" value="${C.st.nc}"></div>
+  <div><label>Yoğunluk</label><input type="range" id="iSI" min="0" max="200" value="${C.st.ni}"></div></div>
+  <div class="inl"><div><label>Blur</label><input type="range" id="iSB" min="0" max="300" value="${C.st.nb}"></div>
+  <div><label>Titreşim Hızı</label><input type="range" id="iSFS" min="5" max="80" value="${C.st.fs*10}"></div></div>
+  <label><input type="checkbox" id="iSFL" ${C.st.fl?'checked':''}> Neon Titreşim</label></div>
   <div class="scard"><h3>📝 Alt Bilgi</h3><input type="text" id="iFT" value="${esc(C.ft)}"></div>
-  <button class="bt bt-pk" onclick="saveY()">✅ Kaydet & Senkronize Et</button>`;
+  <button class="bt bt-pk" onclick="saveY()">✅ Kaydet</button>`;
 }
-function saveY(){
-  C.st.text=$('iST').value;C.st.size=+$('iSS').value;C.st.nc=$('iSC').value;
-  C.st.ni=+$('iSI').value;C.st.nb=+$('iSB').value;C.st.fl=$('iSFL').checked;C.st.fs=+$('iSFS').value/10;
-  C.ft=$('iFT').value;renderAll();saveFB();notify('✅ Kaydedildi!')
-}
+function saveY(){C.st.text=$('iST').value;C.st.size=+$('iSS').value;C.st.nc=$('iSC').value;C.st.ni=+$('iSI').value;C.st.nb=+$('iSB').value;C.st.fl=$('iSFL').checked;C.st.fs=+$('iSFS').value/10;C.ft=$('iFT').value;renderAll();saveFB();notify('✅ Kaydedildi!')}
 
-// --- HEDİYE GALERİSİ ---
 let upIdx=-1,upGal=1;
 function bldGift(n){
   const G=C.G[n];
   const gaO=[['float','🫧 Süzülme'],['pulse','💓 Nabız'],['bounce','⬆ Zıplama'],['swing','🎪 Sallanma'],['jello','🍮 Jöle'],['flip','🔃 Flip'],['spin','🔄 3D Dönüş'],['glitch','⚡ Glitch']];
   const waO=[['fadeIn','🌫 Fade'],['slideDown','⬇ Yukarıdan'],['slideUp','⬆ Aşağıdan'],['zoomIn','🔍 Zoom'],['bounceIn','🏀 Bounce'],['flipIn','🔃 Flip']];
   const ms=(opts,val)=>opts.map(o=>`<option value="${o[0]}" ${val===o[0]?'selected':''}>${o[1]}</option>`).join('');
-
-  let h=`<div class="scard"><h3>📌 Galeri ${n} Başlık & Neon</h3>
+  $('pG'+n).innerHTML=`
+  <div class="scard"><h3>📌 Başlık & Neon</h3>
   <label>Başlık</label><input type="text" value="${esc(G.title)}" oninput="C.G[${n}].title=this.value;renderGifts(${n});saveFB()">
   <label>Boyut</label><input type="range" min="14" max="60" value="${G.ts||28}" oninput="C.G[${n}].ts=+this.value;renderGifts(${n})">
-  <div class="inl"><div><label>🎨 Renk</label><input type="color" value="${G.nc}" onchange="C.G[${n}].nc=this.value;renderGifts(${n});saveFB()"></div>
-  <div><label>💡 Yoğunluk</label><input type="range" min="0" max="200" value="${G.ni}" oninput="C.G[${n}].ni=+this.value;renderGifts(${n})"></div></div>
-  <div class="inl"><div><label>🌫 Blur</label><input type="range" min="0" max="300" value="${G.nb}" oninput="C.G[${n}].nb=+this.value;renderGifts(${n})"></div>
-  <div><label>⚡ Titreşim</label><input type="range" min="5" max="80" value="${G.fs*10}" oninput="C.G[${n}].fs=this.value/10;renderGifts(${n})"></div></div>
+  <div class="inl"><div><label>Renk</label><input type="color" value="${G.nc}" onchange="C.G[${n}].nc=this.value;renderGifts(${n});saveFB()"></div>
+  <div><label>Yoğunluk</label><input type="range" min="0" max="200" value="${G.ni}" oninput="C.G[${n}].ni=+this.value;renderGifts(${n})"></div></div>
+  <div class="inl"><div><label>Blur</label><input type="range" min="0" max="300" value="${G.nb}" oninput="C.G[${n}].nb=+this.value;renderGifts(${n})"></div>
+  <div><label>Titreşim</label><input type="range" min="5" max="80" value="${G.fs*10}" oninput="C.G[${n}].fs=this.value/10;renderGifts(${n})"></div></div>
   <label><input type="checkbox" ${G.fl?'checked':''} onchange="C.G[${n}].fl=this.checked;renderGifts(${n});saveFB()"> Titreşim</label></div>
-<div class="scard"><h3>📐 Yerleşim & Kaydırma</h3>
-<label>Yerleşim Yönü</label>
-<select onchange="C.G[${n}].ly=this.value;renderGifts(${n});saveFB()">
-<option value="horizontal" ${G.ly==='horizontal'||!G.ly?'selected':''}>➡️ Yan Yana (Yatay)</option>
-<option value="vertical" ${G.ly==='vertical'?'selected':''}>⬇️ Alt Alta (Dikey)</option>
-</select>
-<label>Kaydırma Modu</label>
-<select onchange="C.G[${n}].sm=this.value;renderGifts(${n});saveFB()">
-<option value="none" ${G.sm==='none'||!G.sm?'selected':''}>⏸ Sabit (Kaydırma Yok)</option>
-<option value="scroll" ${G.sm==='scroll'?'selected':''}>▶️ Sürekli Kaydır</option>
-</select>
-<label>Kaydırma Yönü</label>
-<select onchange="C.G[${n}].sdir=this.value;renderGifts(${n});saveFB()">
-<option value="left" ${G.sdir==='left'||!G.sdir?'selected':''}>⬅️ Sola Doğru</option>
-<option value="right" ${G.sdir==='right'?'selected':''}>➡️ Sağa Doğru</option>
-<option value="up" ${G.sdir==='up'?'selected':''}>⬆️ Yukarı Doğru</option>
-<option value="down" ${G.sdir==='down'?'selected':''}>⬇️ Aşağı Doğru</option>
-</select>
-<label>Kaydırma Hızı (${G.sspd||20}s - düşük = hızlı)</label>
-<input type="range" min="3" max="60" value="${G.sspd||20}" oninput="C.G[${n}].sspd=+this.value;this.previousElementSibling.textContent='Kaydırma Hızı ('+this.value+'s - düşük = hızlı)';renderGifts(${n});saveFB()">
-</div>
-
   <div class="scard"><h3>🎬 Animasyon</h3>
   <div class="inl"><div><label>Kart Animasyonu</label><select onchange="C.G[${n}].ga=this.value;renderGifts(${n});saveFB()">${ms(gaO,G.ga)}</select></div>
   <div><label>Widget Giriş</label><select onchange="C.G[${n}].wa=this.value;saveFB()">${ms(waO,G.wa)}</select></div></div></div>
-
+  <div class="scard"><h3>📐 Yerleşim & Kaydırma</h3>
+  <label>Yerleşim Yönü</label>
+  <select onchange="C.G[${n}].ly=this.value;renderGifts(${n});saveFB()">
+  <option value="horizontal" ${G.ly==='horizontal'||!G.ly?'selected':''}>➡️ Yan Yana</option>
+  <option value="vertical" ${G.ly==='vertical'?'selected':''}>⬇️ Alt Alta</option></select>
+  <label>Kaydırma Modu</label>
+  <select onchange="C.G[${n}].sm=this.value;renderGifts(${n});saveFB()">
+  <option value="none" ${G.sm==='none'||!G.sm?'selected':''}>⏸ Sabit</option>
+  <option value="scroll" ${G.sm==='scroll'?'selected':''}>▶️ Sürekli Kaydır</option></select>
+  <label>Kaydırma Yönü</label>
+  <select onchange="C.G[${n}].sdir=this.value;renderGifts(${n});saveFB()">
+  <option value="left" ${G.sdir==='left'||!G.sdir?'selected':''}>⬅️ Sola</option>
+  <option value="right" ${G.sdir==='right'?'selected':''}>➡️ Sağa</option>
+  <option value="up" ${G.sdir==='up'?'selected':''}>⬆️ Yukarı</option>
+  <option value="down" ${G.sdir==='down'?'selected':''}>⬇️ Aşağı</option></select>
+  <label>Kaydırma Hızı (${G.sspd||20}s)</label>
+  <input type="range" min="3" max="60" value="${G.sspd||20}" oninput="C.G[${n}].sspd=+this.value;this.previousElementSibling.textContent='Kaydırma Hızı ('+this.value+'s)';renderGifts(${n});saveFB()"></div>
   <div class="scard"><h3>🎁 Hediye Kartları</h3><div id="ge${n}"></div>
   <button class="bt bt-gn bt-sm" onclick="addGift(${n})">➕ Hediye Ekle</button></div>`;
-
-  $('pG'+n).innerHTML=h;
   bldGE(n);
 }
-
 function bldGE(n){
-  const w=$('ge'+n);if(!w)return;w.innerHTML='';
-  const G=C.G[n];if(!G||!G.gifts)return;
+  const w=$('ge'+n);if(!w)return;w.innerHTML='';const G=C.G[n];if(!G||!G.gifts)return;
   G.gifts.forEach((g,i)=>{
     let pv=g.tp==='image'&&g.img?`<img src="${g.img}" class="pimg">`:`<span style="font-size:26px">${g.em||'🎁'}</span>`;
-    w.innerHTML+=`<div class="gbx">
-      <div class="gtt"><span>Hediye ${i+1}</span>
-        <div>${i>0?`<button class="bt bt-bl bt-sm" onclick="mvGift(${n},${i},-1)">⬆</button>`:''} ${i<G.gifts.length-1?`<button class="bt bt-bl bt-sm" onclick="mvGift(${n},${i},1)">⬇</button>`:''} <button class="bt bt-rd bt-sm" onclick="rmGift(${n},${i})">🗑</button></div></div>
+    w.innerHTML+=`<div class="gbx"><div class="gtt"><span>Hediye ${i+1}</span>
+      <div>${i>0?`<button class="bt bt-bl bt-sm" onclick="mvGift(${n},${i},-1)">⬆</button>`:''} ${i<G.gifts.length-1?`<button class="bt bt-bl bt-sm" onclick="mvGift(${n},${i},1)">⬇</button>`:''} <button class="bt bt-rd bt-sm" onclick="rmGift(${n},${i})">🗑</button></div></div>
       <div style="display:flex;gap:10px;align-items:center;margin:6px 0"><div>${pv}</div>
       <div style="flex:1"><label>Tip</label><select onchange="C.G[${n}].gifts[${i}].tp=this.value;bldGE(${n});renderGifts(${n});saveFB()">
         <option value="emoji" ${g.tp==='emoji'?'selected':''}>😀 Emoji</option>
@@ -565,138 +464,91 @@ function bldGE(n){
         :`<button class="bt bt-gd bt-sm" onclick="upGal=${n};upIdx=${i};$('imgUp').click()">📁 Görsel Yükle</button>`}
       <div class="inl"><div><label>İsim</label><input type="text" value="${esc(g.nm)}" oninput="C.G[${n}].gifts[${i}].nm=this.value;renderGifts(${n});saveFB()"></div>
       <div><label>Değer</label><input type="text" value="${esc(g.vl)}" oninput="C.G[${n}].gifts[${i}].vl=this.value;renderGifts(${n});saveFB()"></div></div>
-      <label>Kart Rengi</label><input type="color" value="${g.cl||'#ff0080'}" onchange="C.G[${n}].gifts[${i}].cl=this.value;renderGifts(${n});saveFB()">
-    </div>`;
-  });
+      <label>Renk</label><input type="color" value="${g.cl||'#ff0080'}" onchange="C.G[${n}].gifts[${i}].cl=this.value;renderGifts(${n});saveFB()">
+    </div>`});
 }
 function addGift(n){C.G[n].gifts.push({tp:'emoji',em:'🎀',nm:'YENİ',vl:'0 Coin',cl:'#ff69b4',img:''});bldGE(n);renderGifts(n);saveFB()}
-function rmGift(n,i){if(C.G[n].gifts.length<=1){notify('⚠️ En az 1 hediye!');return}C.G[n].gifts.splice(i,1);bldGE(n);renderGifts(n);saveFB()}
+function rmGift(n,i){if(C.G[n].gifts.length<=1){notify('⚠️ En az 1!');return}C.G[n].gifts.splice(i,1);bldGE(n);renderGifts(n);saveFB()}
 function mvGift(n,i,d){const j=i+d;if(j<0||j>=C.G[n].gifts.length)return;[C.G[n].gifts[i],C.G[n].gifts[j]]=[C.G[n].gifts[j],C.G[n].gifts[i]];bldGE(n);renderGifts(n);saveFB()}
 
 document.addEventListener('DOMContentLoaded',()=>{
   $('imgUp').addEventListener('change',function(e){
     const f=e.target.files[0];if(!f||upIdx<0)return;
-    const r=new FileReader();r.onload=ev=>{
-      const img=new Image();img.onload=()=>{
-        const cv=document.createElement('canvas');let w=img.width,h=img.height;
-        if(w>100||h>100){if(w>h){h=h*100/w;w=100}else{w=w*100/h;h=100}}
-        cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
-        C.G[upGal].gifts[upIdx].tp='image';C.G[upGal].gifts[upIdx].img=cv.toDataURL('image/webp',.7);
-        renderGifts(upGal);bldGE(upGal);saveFB()};
-      img.src=ev.target.result};r.readAsDataURL(f);this.value=''})});
+    const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{const cv=document.createElement('canvas');let w=img.width,h=img.height;if(w>100||h>100){if(w>h){h=h*100/w;w=100}else{w=w*100/h;h=100}}cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);C.G[upGal].gifts[upIdx].tp='image';C.G[upGal].gifts[upIdx].img=cv.toDataURL('image/webp',.7);renderGifts(upGal);bldGE(upGal);saveFB()};img.src=ev.target.result};r.readAsDataURL(f);this.value=''})});
 
-// --- LİSTELER ---
 function bldList(n){
   const L=C.L[n];
   const waO=[['fadeIn','🌫 Fade'],['slideDown','⬇ Yukarıdan'],['slideUp','⬆ Aşağıdan'],['zoomIn','🔍 Zoom'],['bounceIn','🏀 Bounce'],['flipIn','🔃 Flip']];
   const ms=(opts,val)=>opts.map(o=>`<option value="${o[0]}" ${val===o[0]?'selected':''}>${o[1]}</option>`).join('');
-
   $('pL'+n).innerHTML=`
-  <div class="scard"><h3>📌 Liste ${n} Başlık & Neon</h3>
+  <div class="scard"><h3>📌 Başlık & Neon</h3>
   <label>Başlık</label><input type="text" value="${esc(L.t)}" oninput="C.L[${n}].t=this.value;renderList(${n});saveFB()">
-  <div class="inl"><div><label>🎨 Renk</label><input type="color" value="${L.nc}" onchange="C.L[${n}].nc=this.value;renderList(${n});saveFB()"></div>
-  <div><label>💡 Yoğunluk</label><input type="range" min="0" max="200" value="${L.ni}" oninput="C.L[${n}].ni=+this.value;renderList(${n})"></div></div>
-  <div class="inl"><div><label>🌫 Blur</label><input type="range" min="0" max="300" value="${L.nb}" oninput="C.L[${n}].nb=+this.value;renderList(${n})"></div>
-  <div><label>⚡ Titreşim</label><input type="range" min="5" max="80" value="${L.fs*10}" oninput="C.L[${n}].fs=this.value/10;renderList(${n})"></div></div>
+  <div class="inl"><div><label>Renk</label><input type="color" value="${L.nc}" onchange="C.L[${n}].nc=this.value;renderList(${n});saveFB()"></div>
+  <div><label>Yoğunluk</label><input type="range" min="0" max="200" value="${L.ni}" oninput="C.L[${n}].ni=+this.value;renderList(${n})"></div></div>
+  <div class="inl"><div><label>Blur</label><input type="range" min="0" max="300" value="${L.nb}" oninput="C.L[${n}].nb=+this.value;renderList(${n})"></div>
+  <div><label>Titreşim</label><input type="range" min="5" max="80" value="${L.fs*10}" oninput="C.L[${n}].fs=this.value/10;renderList(${n})"></div></div>
   <label><input type="checkbox" ${L.fl?'checked':''} onchange="C.L[${n}].fl=this.checked;renderList(${n});saveFB()"> Titreşim</label></div>
-
   <div class="scard"><h3>🎬 Animasyon & Kaydırma</h3>
-  <div class="inl">
-  <div><label>Widget Giriş</label><select onchange="C.L[${n}].wa=this.value;saveFB()">${ms(waO,L.wa)}</select></div>
+  <div class="inl"><div><label>Widget Giriş</label><select onchange="C.L[${n}].wa=this.value;saveFB()">${ms(waO,L.wa)}</select></div>
   <div><label>Kaydırma Yönü</label><select onchange="C.L[${n}].sd=this.value;renderList(${n});saveFB()">
-    <option value="up" ${L.sd==='up'?'selected':''}>⬆ Yukarı Doğru</option>
-    <option value="down" ${L.sd==='down'?'selected':''}>⬇ Aşağı Doğru</option></select></div></div>
-  <label>Kaydırma Hızı (${L.ss||25}s - düşük = hızlı)</label>
-  <input type="range" min="5" max="60" value="${L.ss||25}" oninput="C.L[${n}].ss=+this.value;this.previousElementSibling.textContent='Kaydırma Hızı ('+this.value+'s - düşük = hızlı)';renderList(${n});saveFB()"></div>
-
-  <div class="scard"><h3>👥 Oyuncular</h3>
-  <p style="color:rgba(255,255,255,.3);font-size:9px;margin-bottom:10px;font-family:'Orbitron',sans-serif">İlk 3 oyuncu podyumda sabit görünür. Geri kalanı kayar.</p>
+    <option value="up" ${L.sd==='up'?'selected':''}>⬆ Yukarı</option>
+    <option value="down" ${L.sd==='down'?'selected':''}>⬇ Aşağı</option></select></div></div>
+  <label>Kaydırma Hızı (${L.ss||25}s)</label>
+  <input type="range" min="5" max="60" value="${L.ss||25}" oninput="C.L[${n}].ss=+this.value;this.previousElementSibling.textContent='Kaydırma Hızı ('+this.value+'s)';renderList(${n});saveFB()"></div>
+  <div class="scard"><h3>👥 Oyuncular</h3><p style="color:rgba(255,255,255,.3);font-size:9px;margin-bottom:10px;font-family:'Orbitron',sans-serif">İlk 3 podyumda sabit, geri kalanı kayar</p>
   <div id="pe${n}"></div>
-  <div style="margin-top:10px">
-    <button class="bt bt-gn bt-sm" onclick="addP(${n})">➕ Oyuncu Ekle</button>
-    <button class="bt bt-pk bt-sm" onclick="saveFB();notify('💾 Senkronize edildi!')">💾 Kaydet</button>
-  </div></div>`;
+  <button class="bt bt-gn bt-sm" onclick="addP(${n})">➕ Ekle</button>
+  <button class="bt bt-pk bt-sm" onclick="saveFB();notify('💾 Senkronize!')">💾 Kaydet</button></div>`;
   bldPE(n);
 }
-
-function bldPE(n){
-  const w=$('pe'+n);if(!w)return;w.innerHTML='';
-  if(!C.L[n].p)C.L[n].p=[];
-  C.L[n].p.forEach((p,i)=>{
-    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-    w.innerHTML+=`<div class="rw"><span style="width:20px;text-align:center;font-size:12px">${medal||i+1+'.'}</span>
+function bldPE(n){const w=$('pe'+n);if(!w)return;w.innerHTML='';if(!C.L[n].p)C.L[n].p=[];
+  C.L[n].p.forEach((p,i)=>{const m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    w.innerHTML+=`<div class="rw"><span style="width:20px;text-align:center;font-size:12px">${m||(i+1)+'.'}</span>
     <input type="text" value="${esc(p.n||'')}" oninput="C.L[${n}].p[${i}].n=this.value;renderList(${n})">
     <input type="number" value="${p.s||0}" style="width:80px" oninput="C.L[${n}].p[${i}].s=+this.value||0;renderList(${n})">
-    <button class="xb" onclick="C.L[${n}].p.splice(${i},1);bldPE(${n});renderList(${n});saveFB()">×</button></div>`;
-  });
-}
+    <button class="xb" onclick="C.L[${n}].p.splice(${i},1);bldPE(${n});renderList(${n});saveFB()">×</button></div>`})}
 function addP(n){C.L[n].p.push({n:'YeniOyuncu',s:0});bldPE(n);renderList(n);saveFB()}
 
-// --- WIDGET ---
 function bldW(){
   const base=location.origin+location.pathname;
-  const widgets=[
-    {k:'gifts1',l:'🎁 Hediye Galerisi 1'},
-    {k:'gifts2',l:'🎁 Hediye Galerisi 2'},
-    {k:'gifts3',l:'🎁 Hediye Galerisi 3'},
-    {k:'list1',l:'🏆 Liste 1 (Podyum)'},
-    {k:'list2',l:'⚡ Liste 2 (Podyum)'},
-    {k:'list3',l:'🌟 Liste 3 (Podyum)'}
-  ];
-  let h=`<div class="scard"><h3>🔥 Anlık Senkron Aktif</h3>
-  <p style="color:#00ff88;font-size:10px;font-family:'Orbitron',sans-serif;line-height:1.8">Panelde değişiklik yapın → Widget'lar <b>anında</b> güncellenir!<br>Artık 6 ayrı widget linkiniz var.</p></div>`;
-
-  widgets.forEach(w=>{
-    const url=base+'?widget='+w.k;
-    h+=`<div class="scard"><h3>${w.l}</h3>
-    <div class="wurl" id="wu_${w.k}">${url}</div>
+  const ws=[{k:'gifts1',l:'🎁 Hediye 1'},{k:'gifts2',l:'🎁 Hediye 2'},{k:'gifts3',l:'🎁 Hediye 3'},{k:'list1',l:'🏆 Liste 1'},{k:'list2',l:'⚡ Liste 2'},{k:'list3',l:'🌟 Liste 3'}];
+  let h=`<div class="scard"><h3>🔥 Anlık Senkron</h3><p style="color:#00ff88;font-size:10px;font-family:'Orbitron',sans-serif;line-height:1.8">Panelde değişiklik yapın → Widget'lar <b>anında</b> güncellenir!</p></div>`;
+  ws.forEach(w=>{const url=base+'?widget='+w.k;
+    h+=`<div class="scard"><h3>${w.l}</h3><div class="wurl" id="wu_${w.k}">${url}</div>
     <button class="bt bt-bl bt-sm" onclick="cpU('wu_${w.k}')">📋 Kopyala</button>
-    <button class="bt bt-gd bt-sm" onclick="window.open('${url}','_blank','width=500,height=400')">🔍 Test</button></div>`;
-  });
-
-  h+=`<div class="scard"><h3>📖 OBS Kurulum</h3>
-  <div style="color:rgba(255,255,255,.5);font-size:10px;line-height:2;font-family:'Orbitron',sans-serif">
-  <p>1. OBS → Kaynaklar → (+) → Tarayıcı</p>
-  <p>2. URL kısmına widget linkini yapıştır</p>
-  <p>3. Genişlik/Yükseklik ayarla</p>
-  <p>4. "Sahne aktif olduğunda yenile" işaretle ✅</p></div></div>`;
-
+    <button class="bt bt-gd bt-sm" onclick="window.open('${url}','_blank','width=500,height=400')">🔍 Test</button></div>`});
+  h+=`<div class="scard"><h3>📖 OBS</h3><div style="color:rgba(255,255,255,.5);font-size:10px;line-height:2;font-family:'Orbitron',sans-serif">
+  <p>1. OBS → Kaynaklar → (+) → Tarayıcı</p><p>2. URL yapıştır</p><p>3. Boyut ayarla</p><p>4. "Sahne aktifken yenile" ✅</p></div></div>`;
   $('pW').innerHTML=h;
 }
 function cpU(id){const t=$(id).textContent;navigator.clipboard.writeText(t).then(()=>notify('📋 Kopyalandı!')).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();notify('📋 Kopyalandı!')})}
 
-// --- TEMA ---
 function bldT(){
   $('pT').innerHTML=`
   <div class="scard"><h3>🎨 Arka Plan</h3>
   <div class="inl"><div><label>Renk</label><input type="color" value="${C.bg.c}" onchange="C.bg.c=this.value;applyBg();saveFB()"></div>
-  <div><label>Saydamlık (${C.bg.o}%)</label><input type="range" min="0" max="100" value="${C.bg.o}" oninput="C.bg.o=+this.value;applyBg();saveFB();this.previousElementSibling.textContent='Saydamlık ('+this.value+'%)'"></div></div></div>
-  <div class="scard"><h3>🌟 Parçacıklar (${C.prt})</h3>
-  <input type="range" min="0" max="80" value="${C.prt}" oninput="C.prt=+this.value;genPrt();saveFB();this.previousElementSibling.textContent='🌟 Parçacıklar ('+this.value+')'"></div>
-  <div class="scard"><h3>⭐ Kayan Yıldızlar (${C.str})</h3>
-  <input type="range" min="0" max="20" value="${C.str}" oninput="C.str=+this.value;genStr();saveFB();this.previousElementSibling.textContent='⭐ Kayan Yıldızlar ('+this.value+')'"></div>
+  <div><label>Saydamlık</label><input type="range" min="0" max="100" value="${C.bg.o}" oninput="C.bg.o=+this.value;applyBg();saveFB()"></div></div></div>
+  <div class="scard"><h3>🌟 Parçacıklar</h3>
+  <input type="range" min="0" max="80" value="${C.prt}" oninput="C.prt=+this.value;genPrt();saveFB()"></div>
+  <div class="scard"><h3>⭐ Yıldızlar</h3>
+  <input type="range" min="0" max="20" value="${C.str}" oninput="C.str=+this.value;genStr();saveFB()"></div>
   <div class="scard"><h3>💾 Yedekleme</h3>
-  <button class="bt bt-gn" onclick="expCfg()">📤 JSON Dışa Aktar</button>
-  <button class="bt bt-bl" onclick="$('impF').click()">📥 JSON İçe Aktar</button>
+  <button class="bt bt-gn" onclick="xpCfg()">📤 Dışa Aktar</button>
+  <button class="bt bt-bl" onclick="$('impF').click()">📥 İçe Aktar</button>
   <button class="bt bt-rd" onclick="rstCfg()">🗑 Sıfırla</button>
   <input type="file" id="impF" accept=".json" style="display:none" onchange="impCfg(this)"></div>`;
 }
-function expCfg(){const b=new Blob([JSON.stringify(C,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='overlay-config.json';a.click();notify('📤 İndirildi!')}
+function xpCfg(){const b=new Blob([JSON.stringify(C,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='overlay-config.json';a.click();notify('📤 İndirildi!')}
 function impCfg(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{C=JSON.parse(e.target.result);saveFB();buildPanel();renderAll();notify('📥 Yüklendi!')}catch(x){notify('❌ Hata!')}};r.readAsText(f);inp.value=''}
 function rstCfg(){if(!confirm('Sıfırlansın mı?'))return;C=getDef();saveFB();buildPanel();renderAll();notify('🗑 Sıfırlandı!')}
 
-// ═══════ HELPERS ═══════
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s||'').replace(/"/g,'&quot;')}
 function notify(m){const d=document.createElement('div');d.style.cssText='position:fixed;top:55px;right:20px;background:linear-gradient(135deg,#ff0080,#7928ca);color:#fff;padding:14px 24px;border-radius:14px;font-family:"Luckiest Guy",cursive;font-size:13px;z-index:99999;box-shadow:0 0 30px rgba(255,0,128,.4);pointer-events:none;backdrop-filter:blur(10px)';d.textContent=m;document.body.appendChild(d);setTimeout(()=>{d.style.opacity='0';d.style.transform='translateX(80px)';d.style.transition='all .4s';setTimeout(()=>d.remove(),400)},2500)}
 
-// ═══════ BAŞLAT ═══════
 window.addEventListener('DOMContentLoaded',()=>{
   setFB('wait','Bağlanıyor...');
-  loadFB(()=>{
-    if(WM){initWidget();renderAll()}
-    else{buildPanel();renderAll()}
-  });
+  loadFB(()=>{if(WM){initWidget();renderAll()}else{buildPanel();renderAll()}});
 });
 </script>
 </body>
