@@ -109,16 +109,16 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 .g-sec{position:relative;z-index:10;margin-bottom:25px}
 .g-tit{text-align:center;margin-bottom:18px}
 .g-tit span{color:#fff}
-.g-wrap{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;perspective:1200px}
-.gc{width:150px;height:190px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:all .5s cubic-bezier(.68,-.55,.265,1.55);overflow:hidden}
+.g-wrap{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;perspective:1200px;padding:5px}
+.gc{width:140px;height:175px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:all .5s cubic-bezier(.68,-.55,.265,1.55);overflow:hidden;backdrop-filter:blur(8px)}
 .gc:hover{transform:translateY(-20px) scale(1.12) rotateY(15deg)!important;z-index:5}
 .gc::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,.08) 50%,transparent 70%);animation:shim 3s ease-in-out infinite;pointer-events:none}
 @keyframes shim{0%{transform:translateX(-100%) translateY(-100%) rotate(45deg)}100%{transform:translateX(100%) translateY(100%) rotate(45deg)}}
 .gc-v{font-size:50px;margin-bottom:8px;filter:drop-shadow(0 0 8px rgba(255,255,255,.4))}
 .gc-v img{width:70px;height:70px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(255,255,255,.4))}
-.gc-n{color:#fff;font-size:13px;text-align:center;letter-spacing:1px}
-.gc-vl{color:rgba(255,255,255,.6);font-size:10px;margin-top:4px;font-family:'Orbitron',sans-serif}
-
+.gc-n{color:#fff;font-size:15px;text-align:center;letter-spacing:1px;text-shadow:0 0 10px rgba(0,0,0,.8),0 2px 4px rgba(0,0,0,.9);font-weight:900;-webkit-text-stroke:.3px rgba(255,255,255,.3)}
+.gc-vl{color:#fff;font-size:12px;margin-top:5px;font-family:'Orbitron',sans-serif;font-weight:700;text-shadow:0 0 10px rgba(0,0,0,.8),0 2px 4px rgba(0,0,0,.9);background:rgba(0,0,0,.4);padding:3px 10px;border-radius:8px}
+  
 /* Gift Animations */
 .gc[data-a=float]{animation:gFl 3s ease-in-out infinite}
 .gc[data-a=float]:nth-child(2){animation-delay:.4s}.gc[data-a=float]:nth-child(3){animation-delay:.8s}.gc[data-a=float]:nth-child(4){animation-delay:1.2s}.gc[data-a=float]:nth-child(5){animation-delay:1.6s}.gc[data-a=float]:nth-child(6){animation-delay:2s}
@@ -130,12 +130,12 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 .gc[data-a=flip]{animation:gFlp 3s ease-in-out infinite}@keyframes gFlp{0%{transform:perspective(400px) rotateY(0)}40%{transform:perspective(400px) rotateY(180deg)}100%{transform:perspective(400px) rotateY(360deg)}}
 .gc[data-a=spin]{animation:gSp 5s linear infinite}@keyframes gSp{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
 .gc[data-a=glitch]{animation:gGl 3s steps(20) infinite}@keyframes gGl{0%,50%,100%{transform:translate(0)}10%{transform:translate(-2px,2px)}20%{transform:translate(2px,-2px)}30%{transform:translate(-1px)}40%{transform:translate(1px,-1px)}}
-.g-wrap.vertical{flex-direction:column;align-items:center;gap:15px}
-.g-wrap.vertical .gc{width:90%;max-width:400px;height:auto;min-height:80px;flex-direction:row;padding:12px 20px;gap:15px}
-.g-wrap.vertical .gc .gc-v{font-size:35px;margin-bottom:0}
-.g-wrap.vertical .gc .gc-v img{width:50px;height:50px}
-.g-wrap.vertical .gc .gc-n{font-size:14px}
-.g-wrap.vertical .gc .gc-vl{margin-top:0;margin-left:auto}
+.g-wrap.vertical{flex-direction:column;align-items:center;gap:8px}
+.g-wrap.vertical .gc{width:92%;max-width:420px;height:auto;min-height:70px;flex-direction:row;padding:10px 18px;gap:14px;border-radius:14px}
+.g-wrap.vertical .gc .gc-v{font-size:32px;margin-bottom:0;flex-shrink:0}
+.g-wrap.vertical .gc .gc-v img{width:45px;height:45px}
+.g-wrap.vertical .gc .gc-n{font-size:15px;text-align:left}
+.g-wrap.vertical .gc .gc-vl{margin-top:0;margin-left:auto;flex-shrink:0}
   
 /* ═══════ DEKORATIF ═══════ */
 .glow-line{width:80%;max-width:600px;height:2px;margin:25px auto;background:linear-gradient(90deg,transparent,#ff0080,#00d4ff,#00ff88,transparent);border-radius:2px;box-shadow:0 0 10px rgba(255,0,128,.4);position:relative;z-index:10}
@@ -338,8 +338,8 @@ function renderGifts(n){
   if(!G.gifts||!G.gifts.length)return;
   G.gifts.forEach((g,i)=>{
     const c=document.createElement('div');c.className='gc';c.setAttribute('data-a',G.ga||'float');
-    c.style.border=`2px solid ${g.cl}55`;c.style.boxShadow=`0 0 30px ${g.cl}33,inset 0 0 25px ${g.cl}15`;
-    c.style.background=`linear-gradient(135deg,${g.cl}18,${g.cl}08)`;c.style.animationDelay=(i*.4)+'s';
+   c.style.border=`3px solid ${g.cl}aa`;c.style.boxShadow=`0 0 20px ${g.cl}55,0 0 40px ${g.cl}22,inset 0 0 20px ${g.cl}20`;
+c.style.background=`linear-gradient(135deg,${g.cl}30,${g.cl}15)`;
     let v=g.tp==='image'&&g.img?`<div class="gc-v"><img src="${g.img}"></div>`:`<div class="gc-v">${g.em||'🎁'}</div>`;
     c.innerHTML=`${v}<div class="gc-n">${g.nm||''}</div><div class="gc-vl">${g.vl||''}</div>`;
     c.onmouseenter=()=>c.style.boxShadow=`0 0 50px ${g.cl}55,inset 0 0 35px ${g.cl}25`;
