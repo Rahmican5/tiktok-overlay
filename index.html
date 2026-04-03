@@ -130,7 +130,13 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 .gc[data-a=flip]{animation:gFlp 3s ease-in-out infinite}@keyframes gFlp{0%{transform:perspective(400px) rotateY(0)}40%{transform:perspective(400px) rotateY(180deg)}100%{transform:perspective(400px) rotateY(360deg)}}
 .gc[data-a=spin]{animation:gSp 5s linear infinite}@keyframes gSp{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
 .gc[data-a=glitch]{animation:gGl 3s steps(20) infinite}@keyframes gGl{0%,50%,100%{transform:translate(0)}10%{transform:translate(-2px,2px)}20%{transform:translate(2px,-2px)}30%{transform:translate(-1px)}40%{transform:translate(1px,-1px)}}
-
+.g-wrap.vertical{flex-direction:column;align-items:center;gap:15px}
+.g-wrap.vertical .gc{width:90%;max-width:400px;height:auto;min-height:80px;flex-direction:row;padding:12px 20px;gap:15px}
+.g-wrap.vertical .gc .gc-v{font-size:35px;margin-bottom:0}
+.g-wrap.vertical .gc .gc-v img{width:50px;height:50px}
+.g-wrap.vertical .gc .gc-n{font-size:14px}
+.g-wrap.vertical .gc .gc-vl{margin-top:0;margin-left:auto}
+  
 /* ═══════ DEKORATIF ═══════ */
 .glow-line{width:80%;max-width:600px;height:2px;margin:25px auto;background:linear-gradient(90deg,transparent,#ff0080,#00d4ff,#00ff88,transparent);border-radius:2px;box-shadow:0 0 10px rgba(255,0,128,.4);position:relative;z-index:10}
 .sub-area{text-align:center;margin:25px 0;position:relative;z-index:10}
@@ -265,19 +271,19 @@ function getDef(){return{
   st:{text:'⚡ EN ÇOK HEDİYE GÖNDERENLER ⚡',size:24,nc:'#00d4ff',ni:80,nb:100,fl:false,fs:3},
   ft:'CANLI YAYIN • TIKTOK LIVE',
   G:{
-    1:{title:'🎁 HEDİYE GALERİSİ 1',ts:30,nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
+   1:{title:'🎁 HEDİYE GALERİSİ 1',ts:30,ly:'horizontal',nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
       {tp:'emoji',em:'🌹',nm:'GÜL',vl:'1 Coin',cl:'#ff0080',img:''},
       {tp:'emoji',em:'💎',nm:'ELMAS',vl:'100 Coin',cl:'#00d4ff',img:''},
       {tp:'emoji',em:'🦁',nm:'ASLAN',vl:'500 Coin',cl:'#00ff88',img:''},
       {tp:'emoji',em:'🚀',nm:'ROKET',vl:'1000 Coin',cl:'#b200ff',img:''},
       {tp:'emoji',em:'👑',nm:'TAÇ',vl:'5000 Coin',cl:'#ffd700',img:''}
     ]},
-    2:{title:'🎁 HEDİYE GALERİSİ 2',ts:28,nc:'#00d4ff',ni:100,nb:120,fl:false,fs:3,ga:'pulse',wa:'fadeIn',gifts:[
+    2:{title:'🎁 HEDİYE GALERİSİ 1',ts:30,ly:'horizontal',nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
       {tp:'emoji',em:'💝',nm:'KALP',vl:'10 Coin',cl:'#ff69b4',img:''},
       {tp:'emoji',em:'⭐',nm:'YILDIZ',vl:'50 Coin',cl:'#ffd700',img:''},
       {tp:'emoji',em:'🎵',nm:'MÜZİK',vl:'200 Coin',cl:'#9b59b6',img:''}
     ]},
-    3:{title:'🎁 HEDİYE GALERİSİ 3',ts:28,nc:'#00ff88',ni:100,nb:120,fl:false,fs:3,ga:'bounce',wa:'fadeIn',gifts:[
+    3:{title:'🎁 HEDİYE GALERİSİ 1',ts:30,ly:'horizontal',nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
       {tp:'emoji',em:'🏆',nm:'KUPA',vl:'2000 Coin',cl:'#ffd700',img:''},
       {tp:'emoji',em:'🌈',nm:'GÖKKUŞAĞI',vl:'3000 Coin',cl:'#ff0080',img:''}
     ]}
@@ -328,7 +334,7 @@ function renderGifts(n){
   sec.setAttribute('data-w',G.wa||'fadeIn');
   sec.innerHTML=`<div class="g-tit"><span id="gT${n}" style="font-size:${G.ts||28}px"></span></div><div class="g-wrap" id="gW${n}"></div>`;
   const te=$('gT'+n);te.textContent=G.title;setN(te,G);
-  const w=$('gW'+n);
+  const w=$('gW'+n);w.className='g-wrap'+(G.ly==='vertical'?' vertical':'');
   if(!G.gifts||!G.gifts.length)return;
   G.gifts.forEach((g,i)=>{
     const c=document.createElement('div');c.className='gc';c.setAttribute('data-a',G.ga||'float');
@@ -469,6 +475,11 @@ function bldGift(n){
   <div class="inl"><div><label>🌫 Blur</label><input type="range" min="0" max="300" value="${G.nb}" oninput="C.G[${n}].nb=+this.value;renderGifts(${n})"></div>
   <div><label>⚡ Titreşim</label><input type="range" min="5" max="80" value="${G.fs*10}" oninput="C.G[${n}].fs=this.value/10;renderGifts(${n})"></div></div>
   <label><input type="checkbox" ${G.fl?'checked':''} onchange="C.G[${n}].fl=this.checked;renderGifts(${n});saveFB()"> Titreşim</label></div>
+<div class="scard"><h3>📐 Yerleşim</h3>
+<select onchange="C.G[${n}].ly=this.value;renderGifts(${n});saveFB()">
+<option value="horizontal" ${G.ly==='horizontal'||!G.ly?'selected':''}>➡️ Yan Yana (Yatay)</option>
+<option value="vertical" ${G.ly==='vertical'?'selected':''}>⬇️ Alt Alta (Dikey)</option>
+</select></div>
 
   <div class="scard"><h3>🎬 Animasyon</h3>
   <div class="inl"><div><label>Kart Animasyonu</label><select onchange="C.G[${n}].ga=this.value;renderGifts(${n});saveFB()">${ms(gaO,G.ga)}</select></div>
