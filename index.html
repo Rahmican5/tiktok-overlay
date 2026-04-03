@@ -130,6 +130,28 @@ hr.sp{border:none;border-top:1px solid rgba(255,255,255,.05);margin:16px 0}
 .gc[data-a=flip]{animation:gFlp 3s ease-in-out infinite}@keyframes gFlp{0%{transform:perspective(400px) rotateY(0)}40%{transform:perspective(400px) rotateY(180deg)}100%{transform:perspective(400px) rotateY(360deg)}}
 .gc[data-a=spin]{animation:gSp 5s linear infinite}@keyframes gSp{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
 .gc[data-a=glitch]{animation:gGl 3s steps(20) infinite}@keyframes gGl{0%,50%,100%{transform:translate(0)}10%{transform:translate(-2px,2px)}20%{transform:translate(2px,-2px)}30%{transform:translate(-1px)}40%{transform:translate(1px,-1px)}}
+.g-scroll{overflow:hidden;position:relative}
+.g-scroll::before,.g-scroll::after{content:'';position:absolute;z-index:3;pointer-events:none}
+.g-scroll.horizontal{overflow:hidden}
+.g-scroll.horizontal::before,.g-scroll.horizontal::after{top:0;width:30px;height:100%}
+.g-scroll.horizontal::before{left:0;background:linear-gradient(to right,rgba(10,10,10,.9),transparent)}
+.g-scroll.horizontal::after{right:0;background:linear-gradient(to left,rgba(10,10,10,.9),transparent)}
+.g-scroll.vertical{overflow:hidden;max-height:350px}
+.g-scroll.vertical::before,.g-scroll.vertical::after{left:0;width:100%;height:30px}
+.g-scroll.vertical::before{top:0;background:linear-gradient(to bottom,rgba(10,10,10,.9),transparent)}
+.g-scroll.vertical::after{bottom:0;background:linear-gradient(to top,rgba(10,10,10,.9),transparent)}
+.g-track{display:flex;gap:10px}
+.g-track.horizontal{flex-direction:row;width:max-content}
+.g-track.vertical{flex-direction:column;align-items:center}
+.g-track.scroll-left{animation:scrollL var(--gss,20s) linear infinite}
+.g-track.scroll-right{animation:scrollR var(--gss,20s) linear infinite}
+.g-track.scroll-up{animation:scrollU var(--gss,20s) linear infinite}
+.g-track.scroll-down{animation:scrollD var(--gss,20s) linear infinite}
+.g-track.paused,.g-scroll:hover .g-track{animation-play-state:paused}
+@keyframes scrollL{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes scrollR{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+@keyframes scrollU{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
+@keyframes scrollD{0%{transform:translateY(-50%)}100%{transform:translateY(0)}}
 .g-wrap.vertical{flex-direction:column;align-items:center;gap:8px}
 .g-wrap.vertical .gc{width:82%;max-width:320px;height:auto;min-height:70px;flex-direction:row;padding:10px 18px;gap:14px;border-radius:14px}
 .g-wrap.vertical .gc .gc-v{font-size:32px;margin-bottom:0;flex-shrink:0}
@@ -271,19 +293,19 @@ function getDef(){return{
   st:{text:'⚡ EN ÇOK HEDİYE GÖNDERENLER ⚡',size:24,nc:'#00d4ff',ni:80,nb:100,fl:false,fs:3},
   ft:'CANLI YAYIN • TIKTOK LIVE',
   G:{
-   1:{title:'🎁 HEDİYE GALERİSİ 1',ts:30,ly:'horizontal',nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
+   1:{title:'🎁 HEDİYE GALERİSİ 1',ts:30,ly:'horizontal',sm:'none',sdir:'left',sspd:20,nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
       {tp:'emoji',em:'🌹',nm:'GÜL',vl:'1 Coin',cl:'#ff0080',img:''},
       {tp:'emoji',em:'💎',nm:'ELMAS',vl:'100 Coin',cl:'#00d4ff',img:''},
       {tp:'emoji',em:'🦁',nm:'ASLAN',vl:'500 Coin',cl:'#00ff88',img:''},
       {tp:'emoji',em:'🚀',nm:'ROKET',vl:'1000 Coin',cl:'#b200ff',img:''},
       {tp:'emoji',em:'👑',nm:'TAÇ',vl:'5000 Coin',cl:'#ffd700',img:''}
     ]},
-    2:{title:'🎁 HEDİYE GALERİSİ 1',ts:30,ly:'horizontal',nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
+    2:{title:'🎁 HEDİYE GALERİSİ 2',ts:28,ly:'horizontal',sm:'none',sdir:'left',sspd:20,:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
       {tp:'emoji',em:'💝',nm:'KALP',vl:'10 Coin',cl:'#ff69b4',img:''},
       {tp:'emoji',em:'⭐',nm:'YILDIZ',vl:'50 Coin',cl:'#ffd700',img:''},
       {tp:'emoji',em:'🎵',nm:'MÜZİK',vl:'200 Coin',cl:'#9b59b6',img:''}
     ]},
-    3:{title:'🎁 HEDİYE GALERİSİ 1',ts:30,ly:'horizontal',nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
+    3:{title:'🎁 HEDİYE GALERİSİ 3',ts:28,ly:'horizontal',sm:'none',sdir:'left',sspd:20,nc:'#ff0080',ni:100,nb:150,fl:true,fs:3,ga:'float',wa:'fadeIn',gifts:[
       {tp:'emoji',em:'🏆',nm:'KUPA',vl:'2000 Coin',cl:'#ffd700',img:''},
       {tp:'emoji',em:'🌈',nm:'GÖKKUŞAĞI',vl:'3000 Coin',cl:'#ff0080',img:''}
     ]}
@@ -335,18 +357,37 @@ function renderGifts(n){
   sec.innerHTML=`<div class="g-tit"><span id="gT${n}" style="font-size:${G.ts||28}px"></span></div><div class="g-wrap" id="gW${n}"></div>`;
   const te=$('gT'+n);te.textContent=G.title;setN(te,G);
   const w=$('gW'+n);w.className='g-wrap'+(G.ly==='vertical'?' vertical':'');
-  if(!G.gifts||!G.gifts.length)return;
-  G.gifts.forEach((g,i)=>{
-    const c=document.createElement('div');c.className='gc';c.setAttribute('data-a',G.ga||'float');
-   c.style.border=`5px solid ${g.cl}aa`;c.style.boxShadow=`0 0 20px ${g.cl}55,0 0 40px ${g.cl}22,inset 0 0 20px ${g.cl}20`;
-c.style.background=`linear-gradient(135deg,${g.cl}30,${g.cl}15)`;
-    let v=g.tp==='image'&&g.img?`<div class="gc-v"><img src="${g.img}"></div>`:`<div class="gc-v">${g.em||'🎁'}</div>`;
-    c.innerHTML=`${v}<div class="gc-n">${g.nm||''}</div><div class="gc-vl">${g.vl||''}</div>`;
-    c.onmouseenter=()=>c.style.boxShadow=`0 0 50px ${g.cl}55,inset 0 0 35px ${g.cl}25`;
-    c.onmouseleave=()=>c.style.boxShadow=`0 0 30px ${g.cl}33,inset 0 0 25px ${g.cl}15`;
-    w.appendChild(c);
-  });
-}
+   const w=$('gW'+n);
+  const scrollMode=G.sm||'none';
+  const scrollDir=G.sdir||'left';
+  const scrollSpd=G.sspd||20;
+  const isVert=G.ly==='vertical';
+
+  if(scrollMode==='scroll'){
+    const orient=isVert?'vertical':'horizontal';
+    const dirClass=isVert?(scrollDir==='down'?'scroll-down':'scroll-up'):(scrollDir==='right'?'scroll-right':'scroll-left');
+    w.className='g-scroll '+orient;
+    let cardsHTML='';
+    if(!G.gifts||!G.gifts.length)return;
+    G.gifts.forEach((g,i)=>{
+      let v=g.tp==='image'&&g.img?`<div class="gc-v"><img src="${g.img}"></div>`:`<div class="gc-v">${g.em||'🎁'}</div>`;
+      cardsHTML+=`<div class="gc" data-a="none" style="border:5px solid ${g.cl}cc;box-shadow:0 0 20px ${g.cl}55,0 0 40px ${g.cl}22,inset 0 0 20px ${g.cl}20;background:linear-gradient(135deg,${g.cl}30,${g.cl}15);flex-shrink:0">${v}<div class="gc-n">${g.nm||''}</div><div class="gc-vl">${g.vl||''}</div></div>`;
+    });
+    w.innerHTML=`<div class="g-track ${orient} ${dirClass}" style="--gss:${scrollSpd}s">${cardsHTML}${cardsHTML}</div>`;
+  } else {
+    w.className='g-wrap'+(isVert?' vertical':'');
+    if(!G.gifts||!G.gifts.length)return;
+    G.gifts.forEach((g,i)=>{
+      const c=document.createElement('div');c.className='gc';c.setAttribute('data-a',G.ga||'float');
+      c.style.border=`5px solid ${g.cl}cc`;c.style.boxShadow=`0 0 20px ${g.cl}55,0 0 40px ${g.cl}22,inset 0 0 20px ${g.cl}20`;
+      c.style.background=`linear-gradient(135deg,${g.cl}30,${g.cl}15)`;c.style.animationDelay=(i*.4)+'s';
+      let v=g.tp==='image'&&g.img?`<div class="gc-v"><img src="${g.img}"></div>`:`<div class="gc-v">${g.em||'🎁'}</div>`;
+      c.innerHTML=`${v}<div class="gc-n">${g.nm||''}</div><div class="gc-vl">${g.vl||''}</div>`;
+      c.onmouseenter=()=>c.style.boxShadow=`0 0 50px ${g.cl}55,inset 0 0 35px ${g.cl}25`;
+      c.onmouseleave=()=>c.style.boxShadow=`0 0 20px ${g.cl}55,0 0 40px ${g.cl}22,inset 0 0 20px ${g.cl}20`;
+      w.appendChild(c);
+    });
+  }
 
 function renderList(n){
   const L=C.L[n];if(!L)return;
@@ -475,11 +516,27 @@ function bldGift(n){
   <div class="inl"><div><label>🌫 Blur</label><input type="range" min="0" max="300" value="${G.nb}" oninput="C.G[${n}].nb=+this.value;renderGifts(${n})"></div>
   <div><label>⚡ Titreşim</label><input type="range" min="5" max="80" value="${G.fs*10}" oninput="C.G[${n}].fs=this.value/10;renderGifts(${n})"></div></div>
   <label><input type="checkbox" ${G.fl?'checked':''} onchange="C.G[${n}].fl=this.checked;renderGifts(${n});saveFB()"> Titreşim</label></div>
-<div class="scard"><h3>📐 Yerleşim</h3>
+<div class="scard"><h3>📐 Yerleşim & Kaydırma</h3>
+<label>Yerleşim Yönü</label>
 <select onchange="C.G[${n}].ly=this.value;renderGifts(${n});saveFB()">
 <option value="horizontal" ${G.ly==='horizontal'||!G.ly?'selected':''}>➡️ Yan Yana (Yatay)</option>
 <option value="vertical" ${G.ly==='vertical'?'selected':''}>⬇️ Alt Alta (Dikey)</option>
-</select></div>
+</select>
+<label>Kaydırma Modu</label>
+<select onchange="C.G[${n}].sm=this.value;renderGifts(${n});saveFB()">
+<option value="none" ${G.sm==='none'||!G.sm?'selected':''}>⏸ Sabit (Kaydırma Yok)</option>
+<option value="scroll" ${G.sm==='scroll'?'selected':''}>▶️ Sürekli Kaydır</option>
+</select>
+<label>Kaydırma Yönü</label>
+<select onchange="C.G[${n}].sdir=this.value;renderGifts(${n});saveFB()">
+<option value="left" ${G.sdir==='left'||!G.sdir?'selected':''}>⬅️ Sola Doğru</option>
+<option value="right" ${G.sdir==='right'?'selected':''}>➡️ Sağa Doğru</option>
+<option value="up" ${G.sdir==='up'?'selected':''}>⬆️ Yukarı Doğru</option>
+<option value="down" ${G.sdir==='down'?'selected':''}>⬇️ Aşağı Doğru</option>
+</select>
+<label>Kaydırma Hızı (${G.sspd||20}s - düşük = hızlı)</label>
+<input type="range" min="3" max="60" value="${G.sspd||20}" oninput="C.G[${n}].sspd=+this.value;this.previousElementSibling.textContent='Kaydırma Hızı ('+this.value+'s - düşük = hızlı)';renderGifts(${n});saveFB()">
+</div>
 
   <div class="scard"><h3>🎬 Animasyon</h3>
   <div class="inl"><div><label>Kart Animasyonu</label><select onchange="C.G[${n}].ga=this.value;renderGifts(${n});saveFB()">${ms(gaO,G.ga)}</select></div>
